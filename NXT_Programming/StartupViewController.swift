@@ -156,6 +156,7 @@ class StartupViewController: UIViewController, UICollectionViewDataSource, UICol
                     self.addAlert(title: "Error", message: "A program with the same name already exists")
                 } else {
                     self.addAlert(title: "Success", message: "\(field.text!) has been saved")
+                    self.renameBarButton.isEnabled = false
                     self.collectionView.reloadData()
                 }
             }
@@ -213,6 +214,10 @@ class StartupViewController: UIViewController, UICollectionViewDataSource, UICol
         //print("event in startup viewcontroller fired")
         self.programsArray = ProgramManager.loadAllPrograms()
         self.collectionView.reloadData()
+        self.newBarButton.isEnabled = true
+        self.openBarButton.isEnabled = false
+        self.deleteBarButton.isEnabled = false
+        self.renameBarButton.isEnabled = false
     }
     
     

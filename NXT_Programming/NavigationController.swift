@@ -23,7 +23,7 @@ class NavigationController: UINavigationController, CollectionDelegate {
         super.viewDidLoad()
         
         if let destination = self.viewControllers.first {
-            let vc = destination as! ViewController /* REPLACE ViewController WITH THE CORRECT CLASS */
+            let vc = destination as! BuildViewController /* REPLACE ViewController WITH THE CORRECT CLASS */
             vc.collectionDelegate = self
             //print("Adjusting variables")
             if !isNewProgram {

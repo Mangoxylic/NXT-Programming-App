@@ -9,6 +9,7 @@
 import UIKit
 import SocketIO
 
+/*
 // NEED TO INCLUDE THE PROTOCOL UNDER THIS COMMENT
 protocol TableDelegate {
     func initializeTable(selectedIndex: Int, macAddressArray: Array<String>)
@@ -17,6 +18,7 @@ protocol TableDelegate {
 protocol CollectionDelegate {
     func sendEventToCollectionView()
 }
+ */
 
 class ViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, AddressDelegate {
     @IBOutlet weak var connectButton: UIBarButtonItem!

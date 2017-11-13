@@ -9,6 +9,14 @@
 import UIKit
 import SocketIO
 
+protocol TableDelegate {
+    func initializeTable(selectedIndex: Int, macAddressArray: Array<String>)
+}
+
+protocol CollectionDelegate {
+    func sendEventToCollectionView()
+}
+
 class BrickObject{
     var type: String!
     init(typeObj: String){
@@ -71,7 +79,7 @@ class WaitObject : BrickObject{
     func getTime()->Int{return time}
 }
 
-class BuildViewController: UIViewController {
+class BuildViewController: UIViewController, AddressDelegate {
     
     @IBOutlet weak var mediumMotorButtonUI: UIButton!
     @IBOutlet weak var largeMotorButtonUI: UIButton!
@@ -106,8 +114,24 @@ class BuildViewController: UIViewController {
     
     var address = ""
     
-    let socket: SocketIOClient = SocketIOClient(socketURL: URL(string: "http://robocode-server.herokuapp.com")!)
-    //let address: String = self.idLabel.text!
+    
+    // MARK: Variables Erick added
+    let client = Client.sharedInstance
+    
+    var tableDelegate: TableDelegate?
+    var macAddressArray: Array<String> = [] // Used to reload tableView
+    var chosenMacAddress: String = "" // The MAC address that the app will "build" to
+    var chosenMacAddressIndex: Int = -1 // Also used to reload the tableView
+    
+    // Variables to modify from the StartupViewController
+    var isNewProgram: Bool?
+    var programName: String = ""
+    var programJSON: String = ""
+    var realmID: String = ""
+    
+    var commandsArray: Array<Dictionary<String, Any>> = []
+    
+    var collectionDelegate: CollectionDelegate?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -126,6 +150,10 @@ class BuildViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override var prefersStatusBarHidden: Bool {
+        return true
     }
     
     /**
@@ -742,6 +770,8 @@ class BuildViewController: UIViewController {
         
     }
     
+    // MARK: IBActions
+    
     @IBAction func sendToServer(){
         //let address: String = self.idLabel.text!
         
@@ -766,11 +796,76 @@ class BuildViewController: UIViewController {
         
         let jsonString: JSON = ["address" : "00:16:53:19:1E:AC", "commands" : jsonArray]
         let jsonFinal = jsonString.description
-        self.socket.emit("run code", jsonFinal)
+        self.client.socket.emit("run code", jsonFinal)
         
         print("SENDING THIS JSON: " )
         print(jsonString.description)
+    }
+    
+    @IBAction func buildBarButtonDidPress(_ sender: UIBarButtonItem) {
+        if self.chosenMacAddressIndex > -1 && self.client.connected {
+            //print("Mac address that is selected: \(self.chosenMacAddress)")
+            
+            let json: JSON =  ["commands":[["type":"playsound", "soundfile": "Woops"], ["type":"motor", "brake": true, "power": 100, "revolutions":5, "port":"A"]], "address":self.chosenMacAddress]
+            
+            
+                                                // *********************************************
+            let jsonString = json.description   // * CHANGE THIS TO WHAT THE ACTUAL PROGRAM IS *
+                                                // *********************************************
+            
+            self.client.socket.emit("run code", jsonString)
+            //print(jsonString)
+            print("Build request was sent to server with the selected mac address")
+        }
+    }
+    
+    // NEED THIS IBAction FUNCTION TO SAVE A PROGRAM
+    @IBAction func saveBarButtonDidPress(_ sender: UIBarButtonItem) {
         
+                            // *********************************************
+        let jsonString = "" // * CHANGE THIS TO WHAT THE ACTUAL PROGRAM IS *
+                            // *********************************************
+        
+        if self.isNewProgram! {
+            let alertController = UIAlertController(title: title, message: "Enter the name of this program", preferredStyle: .alert)
+            
+            let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (_) in
+                if let field = alertController.textFields?[0] {
+                    let valid = ProgramManager.saveNewProgramWith(programName: field.text!, programJSON: jsonString)
+                    print("Saving program with name: \(field.text!)")
+                    print ("Saving program with json: \(jsonString)")
+                    if !valid {
+                        self.addAlert(title: "Error", message: "A program with the same name already exists")
+                    } else {
+                        self.addAlert(title: "Success", message: "\(field.text!) has been saved")
+                        self.collectionDelegate?.sendEventToCollectionView()
+                    }
+                }
+            }
+            
+            let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+            
+            alertController.addTextField(configurationHandler: nil)
+            alertController.addAction(confirmAction)
+            alertController.addAction(cancelAction)
+            self.present(alertController, animated: true)
+        } else {
+            let valid = ProgramManager.updateProgramWith(programName: self.programName, programJSON: jsonString, id: self.realmID)
+            print("Saving program with name: \(programName)")
+            print ("Saving program with json: \(jsonString)")
+            if !valid {
+                self.addAlert(title: "Error", message: "A program with the same name already exists")
+            } else {
+                self.addAlert(title: "Success", message: "\(self.programName) has been saved")
+                self.collectionDelegate?.sendEventToCollectionView()
+            }
+        }
+    }
+    
+    // NEED THIS IBAction FUNCTION TO RETURN TO THE STARTUP SCREEN. COMMENT THIS OUT IF ERRORS SHOW UP
+    @IBAction func backBarButtonDidPress(_ sender: UIBarButtonItem) {
+        self.collectionDelegate?.sendEventToCollectionView()
+        self.dismiss(animated: true)
     }
     
     func createTabs(){
@@ -831,14 +926,42 @@ class BuildViewController: UIViewController {
         }
     }
     
-    /*
+    func addAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        self.present(alertController, animated: true)
+    }
+    
+    
+    // MARK: AddressDelegate functions
+    func updateMacAddressWith(index: Int) {
+        self.chosenMacAddressIndex = index
+        if index > -1 {
+            self.chosenMacAddress = self.macAddressArray[self.chosenMacAddressIndex]
+        } else {
+            self.chosenMacAddress = ""
+        }
+    }
+    
+    func storeMacAddressesWith(macAddressArray: Array<String>) {
+        self.macAddressArray = macAddressArray
+    }
+    
+    func initializeTableView() {
+        self.tableDelegate?.initializeTable(selectedIndex: self.chosenMacAddressIndex, macAddressArray: self.macAddressArray)
+    }
+    
+    
      // MARK: - Navigation
      
      // In a storyboard-based application, you will often want to do a little preparation before navigation
+     // NEED THIS FUNCTION
      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
+         if let destination = segue.destination as? AddressTableViewController {
+             destination.addressDelegate = self
+             self.tableDelegate = destination
+         }
      }
-     */
     
 }
