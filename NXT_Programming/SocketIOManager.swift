@@ -13,7 +13,6 @@ class SocketIOManager: NSObject {
     static let socketIO = SocketIOManager()
     private var socket: SocketIOClient = SocketIOClient(socketURL: URL(string: "http://robocode-server.herokuapp.com/upload")!)
     //private var socket: SocketIOClient = SocketIOClient(socketURL: URL(string: "http:/localhost:3000")!)
-    private let uuid = UUID().uuidString
     
     override init() {
         super.init()

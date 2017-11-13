@@ -36,25 +36,6 @@ class PopoverViewController: UIViewController, ServerDelegate {
         self.preferredContentSize = CGSize(width: 200, height: 200)
         
         delegate?.initializePopover()
-        
-        /*
-        if self.connectToServerButtonEnabled {
-            self.serverStatusLabel.text = "Connected"
-            self.serverStatusLabel.textColor = UIColor.green
-            self.getMacAddressesButton.isEnabled = false
-            self.connectToServerButton.isEnabled = true
-            self.disconnectFromServerButton.isEnabled = false
-        } else {
-            self.serverStatusLabel.text = "Not Connected"
-            self.serverStatusLabel.textColor = UIColor.red
-            self.getMacAddressesButton.isEnabled = true
-            self.connectToServerButton.isEnabled = false
-            self.disconnectFromServerButton.isEnabled = true
-        }
-        */
-        
-        //self.getMacAddressesButton.isEnabled = true
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -70,10 +51,11 @@ class PopoverViewController: UIViewController, ServerDelegate {
     
     
     @IBAction func getMACAddressesButtonDidPress(_ sender: UIButton) {
-        //self.socket.emit("get available nxts")
-        //self.macAddressArray.append("Test 1")
-        //self.macAddressArray.append("Test 2")
-        //self.macAddressArray.append("Test 3")
+        /*
+        self.macAddressArray.append("Test 1")
+        self.macAddressArray.append("Test 2")
+        self.macAddressArray.append("Test 3")
+        */
         self.delegate?.sendMacAddresses(macAddresses: self.macAddressArray)
     }
     

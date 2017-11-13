@@ -22,12 +22,9 @@ protocol ServerDelegate {
 
 class AddressTableViewController: UITableViewController, PopoverDelegate, TableDelegate {
     var macAddressArray: Array<String> = []
-    let socket: SocketIOClient = SocketIOClient(socketURL: URL(string: "http://robocode-server.herokuapp.com")!)
+    let client = Client.sharedInstance
     var serverDelegate: ServerDelegate?
     var addressDelegate: AddressDelegate?
-    
-    // boolean variables to keep track of server status
-    var connected = false;
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,37 +44,26 @@ class AddressTableViewController: UITableViewController, PopoverDelegate, TableD
     }
     
     private func addListeners() {
-        socket.on(clientEvent: .connect) { data, ack in
-            self.connected = true;
-            self.serverDelegate?.updateServerStatusWhere(connected: self.connected)
+        self.client.socket.on(clientEvent: .connect) { data, ack in
+            self.client.connected = true;
+            self.serverDelegate?.updateServerStatusWhere(connected: self.client.connected)
             print("Connected!")
-            /*
-            self.connectToServerButton.isEnabled = false
-            self.disconnectFromServerButton.isEnabled = true
-            self.getMacAddressesButton.isEnabled = true
-            self.serverStatusLabel.text = "Connected"
-            self.serverStatusLabel.textColor = UIColor.green
-            */
-            
-            //self.addAlert(title: "Connected", message: "Your session ID: " + self.socket.sid!)
         }
         
-        socket.on(clientEvent: .reconnect) { data, ack in
-            self.connected = false;
-            /*
-            self.connectToServerButton.isEnabled = false
-            self.disconnectFromServerButton.isEnabled = true
-            self.serverStatusLabel.text = "Connecting"
-            self.serverStatusLabel.textColor = UIColor(red: 255/255.0, green: 204/255.0, blue: 0/255.0, alpha: 1)
-            */
-            
-            //self.addAlert(title: "Connection Failed", message: "Attempting to connect to the server")
+        self.client.socket.on(clientEvent: .reconnect) { data, ack in
+            self.client.connected = false;
+            self.serverDelegate?.updateServerStatusWhere(connected: self.client.connected)
+            print("Connection failed")
         }
         
-        socket.on("available nxts") { data, ack in
-            //print("Interpreting data from server")
-            //print(data[0])
-            
+        /*
+        self.client.socket.on(clientEvent: .disconnect) { data, ack in
+            self.client.connected = false
+            print("Disconnected")
+        }
+        */
+        
+        self.client.socket.on("available nxts") { data, ack in
             let addressData = data[0] as! NSDictionary
             let addressArray = addressData["addresses"] as! Array<String>
             self.macAddressArray = addressArray
@@ -94,7 +80,7 @@ class AddressTableViewController: UITableViewController, PopoverDelegate, TableD
             */
         }
         
-        socket.on("busy") { data, ack in
+        self.client.socket.on("busy") { data, ack in
             print("The server is currently busy. Please try again in a few seconds")
         }
     }
@@ -160,7 +146,7 @@ class AddressTableViewController: UITableViewController, PopoverDelegate, TableD
     // PopoverDelegate functions
     
     func sendMacAddresses(macAddresses: Array<String>) {
-        self.socket.emit("get available nxts")
+        self.client.socket.emit("get available nxts")
         /*
         self.macAddressArray = macAddresses
         self.addressDelegate?.storeMacAddressesWith(macAddressArray: macAddresses)
@@ -172,20 +158,20 @@ class AddressTableViewController: UITableViewController, PopoverDelegate, TableD
     
     func connectToServer() {
         print("Connecting to server")
-        socket.connect()
+        self.client.socket.connect()
         //self.serverDelegate?.updateServerStatusWhere(connected: true)
         
     }
     
     func disconnectFromServer() {
         print("Disconnecting from server")
-        socket.disconnect()
-        self.connected = false
-        self.serverDelegate?.updateServerStatusWhere(connected: self.connected)
+        self.client.socket.disconnect()
+        self.client.connected = false
+        self.serverDelegate?.updateServerStatusWhere(connected: self.client.connected)
     }
     
     func initializePopover() {
-        self.serverDelegate?.updateServerStatusWhere(connected: self.connected)
+        self.serverDelegate?.updateServerStatusWhere(connected: self.client.connected)
     }
     
     // TableDelegate functions

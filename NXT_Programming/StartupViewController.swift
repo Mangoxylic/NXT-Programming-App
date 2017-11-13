@@ -16,8 +16,9 @@ class StartupViewController: UIViewController, UICollectionViewDataSource, UICol
     @IBOutlet weak var newBarButton: UIBarButtonItem!
     @IBOutlet weak var openBarButton: UIBarButtonItem!
     @IBOutlet weak var deleteBarButton: UIBarButtonItem!
-    
+    @IBOutlet weak var renameBarButton: UIBarButtonItem!
     @IBOutlet weak var collectionView: UICollectionView!
+    
     var programsArray: Array<Program> = ProgramManager.loadAllPrograms()
 
     override func viewDidLoad() {
@@ -85,8 +86,10 @@ class StartupViewController: UIViewController, UICollectionViewDataSource, UICol
             self.newBarButton.isEnabled = false
             self.openBarButton.isEnabled = true
             self.deleteBarButton.isEnabled = true
+            self.renameBarButton.isEnabled = true
         } else if indexPaths > 1 {
             self.openBarButton.isEnabled = false
+            self.renameBarButton.isEnabled = false
         }
     }
     
@@ -99,16 +102,34 @@ class StartupViewController: UIViewController, UICollectionViewDataSource, UICol
             self.newBarButton.isEnabled = false
             self.openBarButton.isEnabled = true
             self.deleteBarButton.isEnabled = true
+            self.renameBarButton.isEnabled = true
         } else if indexPaths > 1 {
             self.openBarButton.isEnabled = false
+            self.renameBarButton.isEnabled = false
         } else {
             self.newBarButton.isEnabled = true
             self.openBarButton.isEnabled = false
             self.deleteBarButton.isEnabled = false
+            self.renameBarButton.isEnabled = false
         }
     }
     
     @IBAction func deleteBarButtonDidPress(_ sender: UIBarButtonItem) {
+        /*
+        let alertController = UIAlertController(title: "Warning", message: "Are you sure you want to delete the selected program(s)?", preferredStyle: .alert)
+        
+        let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (_) in
+            
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        alertController.addTextField(configurationHandler: nil)
+        alertController.addAction(confirmAction)
+        alertController.addAction(cancelAction)
+        self.present(alertController, animated: true)
+        */
+        
         let indexPaths = collectionView.indexPathsForSelectedItems!
         
         for indexPath in indexPaths {
@@ -121,6 +142,33 @@ class StartupViewController: UIViewController, UICollectionViewDataSource, UICol
         self.programsArray = ProgramManager.loadAllPrograms()
         self.collectionView.reloadData()
     }
+    
+    @IBAction func renameBarButtonDidPress(_ sender: UIBarButtonItem) {
+        let selectedProgram: Program = self.programsArray[(collectionView.indexPathsForSelectedItems?.first?.row)!]
+        
+        let alertController = UIAlertController(title: title, message: "Enter the name of this program", preferredStyle: .alert)
+        
+        let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (_) in
+            if let field = alertController.textFields?[0] {
+                let valid = ProgramManager.updateProgramWith(programName: field.text!, programJSON: selectedProgram.json, id: selectedProgram.id)
+                print("Saving program with name: \(field.text!)")
+                if !valid {
+                    self.addAlert(title: "Error", message: "A program with the same name already exists")
+                } else {
+                    self.addAlert(title: "Success", message: "\(field.text!) has been saved")
+                    self.collectionView.reloadData()
+                }
+            }
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        alertController.addTextField(configurationHandler: nil)
+        alertController.addAction(confirmAction)
+        alertController.addAction(cancelAction)
+        self.present(alertController, animated: true)
+    }
+    
     
     @IBAction func testRealmButtonDidPress(_ sender: UIButton) {
         //let programDate = self.programsArray[self.programsArray.count - 1].date
@@ -150,6 +198,15 @@ class StartupViewController: UIViewController, UICollectionViewDataSource, UICol
         self.collectionView.reloadData()
     }
 
+    // Private functions
+    
+    private func addAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        self.present(alertController, animated: true)
+    }
+    
     // NavigationDelegate functions
     
     func reloadCollectionView() {

@@ -16,6 +16,8 @@
 		DF08E1501FAE70F70056D8C8 /* PopoverViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF08E14F1FAE70F70056D8C8 /* PopoverViewController.swift */; };
 		DF08E1521FAE89220056D8C8 /* AddressCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF08E1511FAE89220056D8C8 /* AddressCell.swift */; };
 		DF18583D1FB4681F0008DA13 /* NavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF18583C1FB4681F0008DA13 /* NavigationController.swift */; };
+		DF18583F1FB8F9520008DA13 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF18583E1FB8F9520008DA13 /* Client.swift */; };
+		DF1858451FB91DE20008DA13 /* BuildViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1858441FB91DE20008DA13 /* BuildViewController.swift */; };
 		DF227B321F733BD7007E0208 /* SocketIOManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF227B311F733BD7007E0208 /* SocketIOManager.swift */; };
 		DF71BEC71F73A20400E2C9B3 /* ClientController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF71BEC61F73A20400E2C9B3 /* ClientController.swift */; };
 		DF8F317B1F98142C003EB957 /* ProgramManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8F317A1F98142C003EB957 /* ProgramManager.swift */; };
@@ -60,6 +62,8 @@
 		DF08E14F1FAE70F70056D8C8 /* PopoverViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PopoverViewController.swift; sourceTree = "<group>"; };
 		DF08E1511FAE89220056D8C8 /* AddressCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddressCell.swift; sourceTree = "<group>"; };
 		DF18583C1FB4681F0008DA13 /* NavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationController.swift; sourceTree = "<group>"; };
+		DF18583E1FB8F9520008DA13 /* Client.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
+		DF1858441FB91DE20008DA13 /* BuildViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildViewController.swift; sourceTree = "<group>"; };
 		DF227B311F733BD7007E0208 /* SocketIOManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketIOManager.swift; sourceTree = "<group>"; };
 		DF71BEC61F73A20400E2C9B3 /* ClientController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientController.swift; sourceTree = "<group>"; };
 		DF8EEF2357DDD8FA4F92504E /* Pods_NXT_Programming.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NXT_Programming.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -125,6 +129,7 @@
 				DF08E14F1FAE70F70056D8C8 /* PopoverViewController.swift */,
 				DF08E1511FAE89220056D8C8 /* AddressCell.swift */,
 				DF18583C1FB4681F0008DA13 /* NavigationController.swift */,
+				DF1858441FB91DE20008DA13 /* BuildViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -148,6 +153,7 @@
 				DF00D88C1FAAC4A800D1CE15 /* Program.swift */,
 				DF08E1471FABC5980056D8C8 /* JSONHelper.swift */,
 				DF08E1491FABC6300056D8C8 /* Command.swift */,
+				DF18583E1FB8F9520008DA13 /* Client.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -402,6 +408,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF18583F1FB8F9520008DA13 /* Client.swift in Sources */,
 				DF227B321F733BD7007E0208 /* SocketIOManager.swift in Sources */,
 				DFC286611F733A2D00FFEEA4 /* SwiftyJSON.swift in Sources */,
 				DF08E1501FAE70F70056D8C8 /* PopoverViewController.swift in Sources */,
@@ -414,6 +421,7 @@
 				DF08E1521FAE89220056D8C8 /* AddressCell.swift in Sources */,
 				DF71BEC71F73A20400E2C9B3 /* ClientController.swift in Sources */,
 				DFC286351F7339B700FFEEA4 /* ViewController.swift in Sources */,
+				DF1858451FB91DE20008DA13 /* BuildViewController.swift in Sources */,
 				DFC286331F7339B700FFEEA4 /* AppDelegate.swift in Sources */,
 				DF08E14A1FABC6300056D8C8 /* Command.swift in Sources */,
 				DF08E1481FABC5980056D8C8 /* JSONHelper.swift in Sources */,

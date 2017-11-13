@@ -25,15 +25,15 @@ class NavigationController: UINavigationController, CollectionDelegate {
         if let destination = self.viewControllers.first {
             let vc = destination as! ViewController /* REPLACE ViewController WITH THE CORRECT CLASS */
             vc.collectionDelegate = self
-            print("Adjusting variables")
+            //print("Adjusting variables")
             if !isNewProgram {
-                print("Program already exists")
+                //print("Program already exists")
                 vc.isNewProgram = self.isNewProgram
                 vc.programName = self.programName
                 vc.programJSON = self.programJSON
                 vc.realmID = self.realmID
             } else {
-                print("Program is new")
+                //print("Program is new")
                 vc.isNewProgram = self.isNewProgram
             }
         }

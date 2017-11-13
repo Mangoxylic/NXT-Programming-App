@@ -27,7 +27,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     @IBOutlet weak var macAddressTableView: UITableView!
     
     // NEED THIS VARIABLE
-    let socket: SocketIOClient = SocketIOClient(socketURL: URL(string: "http://robocode-server.herokuapp.com")!)
+    let client = Client.sharedInstance
     
     
     //let socket: SocketIOClient = SocketIOClient(socketURL: URL(string: "http://localhost:3000")!)
@@ -83,21 +83,27 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     // NEED THIS FUNCTION. CALL IN viewDidLoad() METHOD
     func addListeners() {
+        /*
         socket.on(clientEvent: .connect) { data, ack in
             print("Mac address that is selected: \(self.chosenMacAddress)")
-                                // *********************************************
-            let jsonString = "" // * CHANGE THIS TO WHAT THE ACTUAL PROGRAM IS *
-                                // *********************************************
+            
+            let json: JSON =  ["commands":[["type":"playsound", "soundfile": "Woops"], ["type":"motor", "brake": true, "power": 100, "revolutions":5, "port":"A"]], "address":self.chosenMacAddress]
+            
+            
+                                                // *********************************************
+            let jsonString = json.description   // * CHANGE THIS TO WHAT THE ACTUAL PROGRAM IS *
+                                                // *********************************************
             
             // The address for the json will be stored in the variable: self.chosenMacAddress
  
             
-            //self.socket.emit("run code", jsonString)
+            self.socket.emit("run code", jsonString)
         }
         
         socket.on("busy") { data, ack in
             print("Server is busy. Please rebuild in a few seconds")
         }
+ */
         
         /*
         socket.on(clientEvent: .connect) { data, ack in
@@ -142,7 +148,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     
     @IBAction func connectButtonDidPress(_ sender: UIBarButtonItem) {
-        self.socket.connect()
+        //self.socket.connect()
     }
     
     
@@ -155,11 +161,11 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         //var array = JSONHelper.parseJSONWith(json: jsonString)
         //JSONHelper.iterateArrayOfDictionariesWith(array: array)
         //self.socket.emit("jsonCommand", jsonString, self.idLabel.text as String!)
-        self.socket.emit("run code", jsonString)
+        //self.socket.emit("run code", jsonString)
     }
     
     @IBAction func disconnectButtonDidPress(_ sender: UIBarButtonItem) {
-        self.socket.disconnect()
+        //self.socket.disconnect()
         self.idLabel.text = nil
         self.connectButton.isEnabled = true
         self.disconnectButton.isEnabled = false
@@ -171,7 +177,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     @IBAction func getMacAddressesButtonDidPress(_ sender: UIButton) {
         //self.socket.emit("getPiDevices")
         //macAddressTableView.reloadData()
-        self.socket.emit("get available nxts")
+        //self.socket.emit("get available nxts")
     }
     
     /*
@@ -233,9 +239,19 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     // NEED THIS IBAction FUNCTION TO SEND JSON TO THE SERVER/ROBOT
     @IBAction func buildBarButtonDidPress(_ sender: UIBarButtonItem) {
-        if self.chosenMacAddressIndex > -1 {
-            self.socket.connect()
-            print("Pressed the button")
+        if self.chosenMacAddressIndex > -1 && self.client.connected {
+            //print("Mac address that is selected: \(self.chosenMacAddress)")
+            
+            let json: JSON =  ["commands":[["type":"playsound", "soundfile": "Woops"], ["type":"motor", "brake": true, "power": 100, "revolutions":5, "port":"A"]], "address":self.chosenMacAddress]
+            
+            
+                                                // *********************************************
+            let jsonString = json.description   // * CHANGE THIS TO WHAT THE ACTUAL PROGRAM IS *
+                                                // *********************************************
+            
+            self.client.socket.emit("run code", jsonString)
+            //print(jsonString)
+            print("Build request was sent to server with the selected mac address")
         }
     }
     
@@ -252,8 +268,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (_) in
                 if let field = alertController.textFields?[0] {
                     let valid = ProgramManager.saveNewProgramWith(programName: field.text!, programJSON: jsonString)
-                    //print("Saving program with name: \(field.text!)")
-                    //print ("Saving program with json: \(jsonString)")
+                    print("Saving program with name: \(field.text!)")
+                    print ("Saving program with json: \(jsonString)")
                     if !valid {
                         self.addAlert(title: "Error", message: "A program with the same name already exists")
                     } else {
@@ -271,8 +287,8 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
             self.present(alertController, animated: true)
         } else {
             let valid = ProgramManager.updateProgramWith(programName: self.programName, programJSON: jsonString, id: self.realmID)
-            //print("Saving program with name: \(programName)")
-            //print ("Saving program with json: \(jsonString)")
+            print("Saving program with name: \(programName)")
+            print ("Saving program with json: \(jsonString)")
             if !valid {
                 self.addAlert(title: "Error", message: "A program with the same name already exists")
             } else {
@@ -284,6 +300,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     // NEED THIS IBAction FUNCTION TO RETURN TO THE STARTUP SCREEN. COMMENT THIS OUT IF ERRORS SHOW UP
     @IBAction func backBarButtonDidPress(_ sender: UIBarButtonItem) {
+        self.collectionDelegate?.sendEventToCollectionView()
         self.dismiss(animated: true)
     }
     

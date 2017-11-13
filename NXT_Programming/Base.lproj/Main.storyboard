@@ -234,21 +234,21 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" scrollDirection="horizontal" minimumLineSpacing="20" minimumInteritemSpacing="20" id="Cng-gq-QDI">
-                                    <size key="itemSize" width="175" height="100"/>
+                                    <size key="itemSize" width="181" height="100"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="20" minY="0.0" maxX="20" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="ProgramCell" id="qnM-3w-Url" customClass="ProgramCell" customModule="NXT_Programming" customModuleProvider="target">
-                                        <rect key="frame" x="20" y="40" width="175" height="100"/>
+                                        <rect key="frame" x="20" y="40" width="181" height="100"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="175" height="100"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="181" height="100"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eb4-jX-Ynz">
-                                                    <rect key="frame" x="0.0" y="0.0" width="175" height="100"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="181" height="100"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -286,7 +286,6 @@
                                 <rect key="frame" x="0.0" y="0.0" width="1024" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <items>
-                                    <barButtonItem width="850" style="plain" systemItem="fixedSpace" id="92r-Ii-12k"/>
                                     <barButtonItem title="New" id="Cox-pO-XMX">
                                         <connections>
                                             <action selector="newBarButtonDidPress:" destination="30B-aE-fhw" id="m26-ml-5yZ"/>
@@ -306,13 +305,19 @@
                                             <action selector="deleteBarButtonDidPress:" destination="30B-aE-fhw" id="h5h-dG-2dG"/>
                                         </connections>
                                     </barButtonItem>
+                                    <barButtonItem width="750" style="plain" systemItem="fixedSpace" id="woN-jh-jqL"/>
+                                    <barButtonItem enabled="NO" title="Rename" id="8k3-oe-IWu">
+                                        <connections>
+                                            <action selector="renameBarButtonDidPress:" destination="30B-aE-fhw" id="xBO-dR-JyA"/>
+                                        </connections>
+                                    </barButtonItem>
                                 </items>
                             </toolbar>
                             <pageControl opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" numberOfPages="3" translatesAutoresizingMaskIntoConstraints="NO" id="BXG-QD-CEq">
                                 <rect key="frame" x="422" y="546" width="181" height="37"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="pageIndicatorTintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <color key="currentPageIndicatorTintColor" red="1" green="0.84174639839999998" blue="0.29881319890000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="currentPageIndicatorTintColor" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </pageControl>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -323,6 +328,7 @@
                         <outlet property="deleteBarButton" destination="6de-zX-xRj" id="ilT-CZ-opf"/>
                         <outlet property="newBarButton" destination="Cox-pO-XMX" id="TMC-KW-eUg"/>
                         <outlet property="openBarButton" destination="guq-xt-thN" id="W5p-B3-BWW"/>
+                        <outlet property="renameBarButton" destination="8k3-oe-IWu" id="BX0-xE-bLV"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SJq-xp-7VD" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -332,7 +338,6 @@
         <!--Navigation Controller-->
         <scene sceneID="zrg-SC-vuj">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="dTG-jd-w3l" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="x6j-M2-LVt" customClass="NavigationController" customModule="NXT_Programming" customModuleProvider="target" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="4i6-Or-fDD">
@@ -344,6 +349,7 @@
                         <segue destination="BYZ-38-t0r" kind="relationship" relationship="rootViewController" id="cBG-ls-Vge"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dTG-jd-w3l" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="758.203125" y="39.84375"/>
         </scene>
