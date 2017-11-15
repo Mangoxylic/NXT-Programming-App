@@ -169,11 +169,12 @@ class BuildViewController: UIViewController, AddressDelegate {
         super.viewDidLoad()
         
         //Create the scroll view
-        scrollView = UIScrollView(frame: CGRect(x: 0, y: 200, width: view.frame.width, height: 200))
+        scrollView = UIScrollView(frame: CGRect(x: 0, y: 200, width: view.frame.width, height: 220))
         scrollView.backgroundColor = UIColor(red:0.95, green:0.95, blue:0.95, alpha:1.0)
-        scrollView.contentSize = CGSize(width: view.bounds.size.width * 100, height: 128 * 2)
+        scrollView.contentSize = CGSize(width: view.bounds.size.width * 100, height: 200)
         self.view.addSubview(scrollView)
         scrollView.showsHorizontalScrollIndicator = true
+        scrollView.showsVerticalScrollIndicator = false
         //End scroll view stuff
         
         createStartButton()
@@ -527,7 +528,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         var toAppend = Bool()
         toAppend = false
         
-        if(yLoc > 300 && yLoc < 440){
+        if(yLoc > 200 && yLoc < 400){
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
                 toAppend = true
@@ -559,6 +560,12 @@ class BuildViewController: UIViewController, AddressDelegate {
             newMM.setBrake(newBrake: brakeBool)
             newMM.setRotations(newRot: Int(rotations)!)
             newMM.setPort(newPort: port)
+            var oldPanGesture = UIPanGestureRecognizer()
+            oldPanGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewMM(_:)))
+            var newPanGesture = UIPanGestureRecognizer()
+            newPanGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedBlockInCode(_:)))
+            medMotorView.removeGestureRecognizer(oldPanGesture)
+            medMotorView.addGestureRecognizer(newPanGesture)
             if(toAppend){
                 medMotorView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
                 nextPoint.x = nextPoint.x + 128
@@ -597,7 +604,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         var toAppend = Bool()
         toAppend = false
         
-        if(yLoc > 300 && yLoc < 440){
+        if(yLoc > 200 && yLoc < 400){
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
                 displayView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
@@ -654,7 +661,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         var toAppend = Bool()
         toAppend = false
         
-        if(yLoc > 300 && yLoc < 440){
+        if(yLoc > 200 && yLoc < 400){
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
                 toAppend = true
@@ -681,6 +688,12 @@ class BuildViewController: UIViewController, AddressDelegate {
             let newS = SoundObject(ty: "sound");
             newS.setTypeSound(newType: type)
             newS.setVolume(newVol: Int(volume)!)
+            var oldPanGesture = UIPanGestureRecognizer()
+            oldPanGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewS(_:)))
+            var newPanGesture = UIPanGestureRecognizer()
+            newPanGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedBlockInCode(_:)))
+            soundView.removeGestureRecognizer(oldPanGesture)
+            soundView.addGestureRecognizer(newPanGesture)
             if(toAppend){
                 soundView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
                 nextPoint.x = nextPoint.x + 128
@@ -718,7 +731,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         var toAppend = Bool()
         toAppend = false
         
-        if(yLoc > 300 && yLoc < 440){
+        if(yLoc > 200 && yLoc < 400){
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
                 toAppend = true
@@ -744,6 +757,13 @@ class BuildViewController: UIViewController, AddressDelegate {
             
             let newW = WaitObject(ty: "wait");
             newW.setTime(newTime: Int(time)!);
+            
+            var oldPanGesture = UIPanGestureRecognizer()
+            oldPanGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewW(_:)))
+            var newPanGesture = UIPanGestureRecognizer()
+            newPanGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedBlockInCode(_:)))
+            waitView.removeGestureRecognizer(oldPanGesture)
+            waitView.addGestureRecognizer(newPanGesture)
             if(toAppend){
                 waitView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
                 nextPoint.x = nextPoint.x + 128
@@ -776,7 +796,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         var toAppend = Bool()
         toAppend = false
         
-        if(yLoc > 300 && yLoc < 440){
+        if(yLoc > 200 && yLoc < 400){
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
                 toAppend = true
@@ -803,6 +823,12 @@ class BuildViewController: UIViewController, AddressDelegate {
             //MARK: Fix these hard coded values
             newSL.setLoops(newLoops: 1)
             newSL.setTime(newTime: 5)
+            var oldPanGesture = UIPanGestureRecognizer()
+            oldPanGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewSL(_:)))
+            var newPanGesture = UIPanGestureRecognizer()
+            newPanGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedBlockInCode(_:)))
+            startLoopView.removeGestureRecognizer(oldPanGesture)
+            startLoopView.addGestureRecognizer(newPanGesture)
             
             if(toAppend){
                 startLoopView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
@@ -831,13 +857,11 @@ class BuildViewController: UIViewController, AddressDelegate {
         
         let xLoc = endLoopView.center.x + translation.x
         let yLoc = endLoopView.center.y + translation.y
-        
         var index = Int()
         index = viewSequence.count
         var toAppend = Bool()
         toAppend = false
-        
-        if(yLoc > 300 && yLoc < 440){
+        if(yLoc > 200 && yLoc < 400){
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
                 toAppend = true
@@ -857,9 +881,15 @@ class BuildViewController: UIViewController, AddressDelegate {
                 }
             }
         }
+        
         if(sender.state == UIGestureRecognizerState.ended){
             let newEL = EndLoopObject(ty: "endLoop");
-            
+            var oldPanGesture = UIPanGestureRecognizer()
+            oldPanGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewEL(_:)))
+            var newPanGesture = UIPanGestureRecognizer()
+            newPanGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedBlockInCode(_:)))
+            endLoopView.removeGestureRecognizer(oldPanGesture)
+            endLoopView.addGestureRecognizer(newPanGesture)
             if(toAppend){
                 endLoopView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
                 nextPoint.x = nextPoint.x + 128
@@ -1587,6 +1617,38 @@ class BuildViewController: UIViewController, AddressDelegate {
             destination.addressDelegate = self
             self.tableDelegate = destination
         }
+    }
+    
+    func draggedBlockInCode(_ sender:UIPanGestureRecognizer){
+        //        let translation = sender.translation(in: self.view)
+        //        if (sender.state == .began){
+        //
+        //        }
+        //
+        //        let loc = sender.location(in: scrollView)
+        //        var touchedView: UIView? = nil
+        //        for view in viewSequence {
+        //            if(view.frame.contains(loc)){
+        //                touchedView = view
+        //            }
+        //        }
+        //        if (touchedView != nil){
+        //            touchedView!.center = CGPoint(x: touchedView!.center.x + translation.x, y: touchedView!.center.y + translation.y)
+        //            sender.setTranslation(CGPoint.zero, in: self.view)
+        //
+        //            let xLoc = touchedView!.center.x + translation.x
+        //            let yLoc = touchedView!.center.y + translation.y
+        //
+        //            if (sender.state == .ended){
+        //                for view in viewSequence {
+        //                    if (view.frame.contains(touchedView!.center)){
+        //                        print("Dragged onto another block")
+        //                    }
+        //                }
+        //            }
+        //        }
+        //
+        
     }
     
 }
