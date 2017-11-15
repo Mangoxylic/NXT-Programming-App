@@ -582,10 +582,14 @@ class BuildViewController: UIViewController, AddressDelegate {
             startLoopView = createStartLoop()
             return startLoopView
         }
-            //else if(type == "endLoopView"){
-        else{
+        else if (type == "endLoopView"){
             endLoopView = createEndLoop()
             return endLoopView
+        }
+        //else if (type == "steerView") {
+        else {
+            steerView = createSteer()
+            return steerView
         }
     }
     
@@ -1849,6 +1853,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         waitView.isHidden = show;
         startLoopView.isHidden = show;
         endLoopView.isHidden = show;
+        steerView.isHidden = show;
     }
     
     func deleteBlock(sender: Any, event: UIEvent){
