@@ -101,6 +101,33 @@ class EndLoopObject : BrickObject {
     }
 }
 
+class SteerObject : BrickObject {
+    var brake: Bool = true
+    var power: Int = 0
+    var revolutions: Int = 0
+    var leadport: String = "B"
+    var followport: String = "C"
+    var turnratio: Int = 0
+    
+    init(ty: String) {
+        super.init(typeObj: ty)
+    }
+    
+    func getBrake()->Bool{ return brake }
+    func getPower()->Int{ return power}
+    func getRevolutions()->Int{ return revolutions }
+    func getLeadPort()->String{ return leadport}
+    func getFollowPort()->String{ return followport }
+    func getTurnRatio()->Int{ return turnratio }
+    
+    func setBrake(newBrake: Bool){ brake = newBrake }
+    func setPower(newPower: Int){ power = newPower }
+    func setRevolutions(newRev: Int){ revolutions = newRev }
+    func setLeadPort(newLP: String){ leadport = newLP}
+    func setFollowPort(newFP: String){ followport = newFP }
+    func setTurnRatio(newTurnRatio: Int){ turnratio = newTurnRatio }
+}
+
 class BuildViewController: UIViewController, AddressDelegate {
     
     @IBOutlet weak var mediumMotorButtonUI: UIButton!
@@ -108,6 +135,7 @@ class BuildViewController: UIViewController, AddressDelegate {
     @IBOutlet weak var moveSteeringButtonUI: UIButton!
     @IBOutlet weak var moveTankButtonUI: UIButton!
     @IBOutlet weak var soundButtonUI: UIButton!
+    @IBOutlet weak var SteerButtonUI: UIButton!
     @IBOutlet weak var idLabel: UILabel!
     
     var scrollView: UIScrollView! = nil
@@ -128,6 +156,7 @@ class BuildViewController: UIViewController, AddressDelegate {
     var waitView = UIView()
     var startLoopView = UIView()
     var endLoopView = UIView()
+    var steerView = UIView()
     var viewSequence = [UIView]()
 //    var testView = OverallView()
 //    var testProfileView = ProfileView()
@@ -140,6 +169,12 @@ class BuildViewController: UIViewController, AddressDelegate {
     let brakeMM = UILabel()
     let loops = UILabel()
     let time = UILabel()
+    let brakeS = UILabel()
+    let powerS = UILabel()
+    let revolutions = UILabel()
+    let leadport = UILabel()
+    let followport = UILabel()
+    let turnratio = UILabel()
     var objectSequence = [BrickObject]()
     
     var testButton = UIButton()
@@ -184,6 +219,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         waitView = createWait()
         startLoopView = createStartLoop()
         endLoopView = createEndLoop()
+        steerView = createSteer()
         
         //        sendJSON = createButton(title: "send", _x: 700, _y: 700, _width: 120, _height: 80)
         //        sendJSON.addTarget(self, action: #selector(sendToServer), for: UIControlEvents.touchUpInside)
@@ -467,6 +503,62 @@ class BuildViewController: UIViewController, AddressDelegate {
         deleteButton.addTarget(self, action: #selector(deleteBlock(sender:event:)), for: UIControlEvents.touchUpInside)
         
         tempView.addSubview(name)
+        tempView.addSubview(deleteButton)
+        self.view.addSubview(tempView)
+        
+        return tempView
+    }
+    
+    func createSteer()->UIView{
+        let tempView = UIView()
+        tempView.backgroundColor = UIColor.yellow
+        tempView.frame = CGRect(x: 25, y: 650, width: 120, height: 160)
+        
+        var brakeButton = UIButton()
+        brakeButton = createButton(title: "brake", _x: 0, _y: 50, _width: 35, _height: 40);
+        
+        var powerButton = UIButton();
+        powerButton = createButton(title: "power", _x: 40, _y: 50, _width: 35, _height: 40)
+        
+        var revolutionsButton = UIButton();
+        revolutionsButton = createButton(title: "revolutions", _x: 80, _y: 50, _width: 35, _height: 40)
+        
+        var leadportButton = UIButton();
+        leadportButton = createButton(title: "lead port", _x: 0, _y: 110, _width: 35, _height: 40)
+        
+        var followportButton = UIButton();
+        followportButton = createButton(title: "follow port", _x: 40, _y: 110, _width: 35, _height: 40)
+        
+        var turnratioButton = UIButton();
+        turnratioButton = createButton(title: "turn ratio", _x: 80, _y: 110, _width: 35, _height: 40)
+        
+        var deleteButton = UIButton();
+        deleteButton = createButton(title: "X", _x: 100, _y: 0, _width: 20, _height: 30)
+        
+        let name = UILabel()
+        name.frame = CGRect(x: 40, y: 0, width: 120, height: 40)
+        name.text = "Steer"
+        
+        var panGesture = UIPanGestureRecognizer()
+        panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewSteer(_:)))
+        tempView.isUserInteractionEnabled = true
+        tempView.addGestureRecognizer(panGesture)
+        
+        brakeButton.addTarget(self, action: #selector(brakeAlertSteer(sender:event:)), for: UIControlEvents.touchUpInside)
+        powerButton.addTarget(self, action: #selector(powerAlertSteer(sender:event:)), for: UIControlEvents.touchUpInside)
+        revolutionsButton.addTarget(self, action: #selector(revolutionsAlertSteer(sender:event:)), for: UIControlEvents.touchUpInside)
+        leadportButton.addTarget(self, action: #selector(leadPortAlert(sender:event:)), for: UIControlEvents.touchUpInside)
+        followportButton.addTarget(self, action: #selector(followPortAlert(sender:event:)), for: UIControlEvents.touchUpInside)
+        turnratioButton.addTarget(self, action: #selector(turnRatioAlert(sender:event:)), for: UIControlEvents.touchUpInside)
+        deleteButton.addTarget(self, action: #selector(deleteBlock(sender:event:)), for: UIControlEvents.touchUpInside)
+        
+        tempView.addSubview(name)
+        tempView.addSubview(brakeButton)
+        tempView.addSubview(powerButton)
+        tempView.addSubview(revolutionsButton)
+        tempView.addSubview(leadportButton)
+        tempView.addSubview(followportButton)
+        tempView.addSubview(turnratioButton)
         tempView.addSubview(deleteButton)
         self.view.addSubview(tempView)
         
@@ -909,6 +1001,73 @@ class BuildViewController: UIViewController, AddressDelegate {
         }
     }
     
+    func draggedViewSteer(_ sender:UIPanGestureRecognizer){
+        
+        let translation = sender.translation(in: self.view)
+        
+        steerView.center = CGPoint(x: steerView.center.x + translation.x, y: steerView.center.y + translation.y)
+        sender.setTranslation(CGPoint.zero, in: self.view)
+        
+        let xLoc = steerView.center.x + translation.x
+        let yLoc = steerView.center.y + translation.y
+        
+        var index = Int()
+        index = viewSequence.count
+        var toAppend = Bool()
+        toAppend = false
+        
+        if(yLoc > 300 && yLoc < 440){
+            //if dragged to end
+            if(xLoc > (nextPoint.x + 128)){
+                steerView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
+                nextPoint.x = nextPoint.x + 128
+                toAppend = true
+            }
+                //if dragged to middle
+            else if(xLoc > startPoint.x && xLoc < nextPoint.x){
+                var beginXRange = startPoint.x
+                var endXRange = startPoint.x + 128
+                for i in  0..<viewSequence.count {
+                    if(xLoc < endXRange && xLoc > beginXRange){
+                        index = i
+                    }else{
+                        beginXRange += 128
+                        endXRange += 128
+                    }
+                }
+            }
+        }
+        if(sender.state == UIGestureRecognizerState.ended){
+            let labels = getLabelsInView(view: steerView)
+            //TODO: Fix label numbers
+            let brake = labels[10].text!
+            let power = labels[11].text!
+            let revolutions = labels[12].text!
+            let leadport = labels[13].text!
+            let followport = labels[14].text!
+            let turnratio = labels[15].text!
+            let brakeBool = brake.lowercased() == "true"
+            
+            let newS = SteerObject(ty: "steer");
+            newS.setBrake(newBrake: brakeBool)
+            newS.setPower(newPower: Int(power)!)
+            newS.setRevolutions(newRev: Int(revolutions)!)
+            newS.setLeadPort(newLP: leadport)
+            newS.setFollowPort(newFP: followport)
+            newS.setTurnRatio(newTurnRatio: Int(turnratio)!)
+            if(toAppend){
+                objectSequence.append(newS);
+                viewSequence.append(steerView)
+            }else{
+                objectSequence.insert(newS, at: index)
+                viewSequence.insert(steerView, at: index)
+            }
+            updateUIViewOrder()
+            
+            steerView = replaceView(type: "steerView")
+        }
+    }
+    
     func getContent(s: String)->String{
         var str = s
         let index = str.index(str.startIndex, offsetBy: 10);
@@ -1249,6 +1408,174 @@ class BuildViewController: UIViewController, AddressDelegate {
             loops.text = ans
             
             self.startLoopView.addSubview(loops)
+            
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+        return ans;
+    }
+    
+    func brakeAlertSteer(sender: Any, event: UIEvent)->String{
+        var ans = String()
+        let alert = UIAlertController(title: "Steer Brake", message: "Enter true or false", preferredStyle: .alert)
+        
+        alert.addTextField { (textField) in
+            textField.text = "true"
+        }
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
+            let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
+            print("Text field: \(String(describing: textField?.text))");
+            
+            let x = String(describing: textField?.text);
+            ans = self.getContent(s: x)
+            print("ans")
+            print(ans)
+            
+            self.brakeS.frame = CGRect(x: 0, y: 25, width: 35, height: 30)
+            self.brakeS.text = ans
+            
+            self.steerView.addSubview(self.brakeS)
+            
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+        return ans;
+    }
+    
+    func powerAlertSteer(sender: Any, event: UIEvent)->String{
+        var ans = String()
+        let alert = UIAlertController(title: "Motor Power", message: "Enter a number from -100 to 100", preferredStyle: .alert)
+        
+        alert.addTextField { (textField) in
+            textField.text = "75"
+        }
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
+            let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
+            print("Text field: \(String(describing: textField?.text))");
+            
+            let x = String(describing: textField?.text);
+            ans = self.getContent(s: x)
+            print("ans")
+            print(ans)
+            
+            self.powerS.frame = CGRect(x: 40, y: 25, width: 35, height: 30)
+            self.powerS.text = ans
+            
+            self.steerView.addSubview(self.powerS)
+            
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+        return ans;
+    }
+    
+    func revolutionsAlertSteer(sender: Any, event: UIEvent)->String{
+        var ans = String()
+        let alert = UIAlertController(title: "Number of Revolutions", message: "Enter number of revolutions", preferredStyle: .alert)
+        
+        alert.addTextField { (textField) in
+            textField.text = "1"
+        }
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
+            let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
+            print("Text field: \(String(describing: textField?.text))");
+            
+            let x = String(describing: textField?.text);
+            ans = self.getContent(s: x)
+            print("ans")
+            print(ans)
+            
+            self.revolutions.frame = CGRect(x: 80, y: 25, width: 35, height: 30)
+            self.revolutions.text = ans
+            
+            self.steerView.addSubview(self.revolutions)
+            
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+        return ans;
+    }
+    
+    func leadPortAlert(sender: Any, event: UIEvent)->String{
+        var ans = String()
+        let alert = UIAlertController(title: "Lead Port", message: "Enter port number or letter", preferredStyle: .alert)
+        
+        alert.addTextField { (textField) in
+            textField.text = "B"
+        }
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
+            let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
+            print("Text field: \(String(describing: textField?.text))");
+            
+            let x = String(describing: textField?.text);
+            ans = self.getContent(s: x)
+            print("ans")
+            print(ans)
+            
+            self.leadport.frame = CGRect(x: 0, y: 85, width: 35, height: 30)
+            self.leadport.text = ans
+            
+            self.steerView.addSubview(self.leadport)
+            
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+        return ans;
+    }
+    
+    func followPortAlert(sender: Any, event: UIEvent)->String{
+        var ans = String()
+        let alert = UIAlertController(title: "Follow Port", message: "Enter port number or letter", preferredStyle: .alert)
+        
+        alert.addTextField { (textField) in
+            textField.text = "C"
+        }
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
+            let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
+            print("Text field: \(String(describing: textField?.text))");
+            
+            let x = String(describing: textField?.text);
+            ans = self.getContent(s: x)
+            print("ans")
+            print(ans)
+            
+            self.followport.frame = CGRect(x: 40, y: 85, width: 35, height: 30)
+            self.followport.text = ans
+            
+            self.steerView.addSubview(self.followport)
+            
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+        return ans;
+    }
+    
+    func turnRatioAlert(sender: Any, event: UIEvent)->String{
+        var ans = String()
+        let alert = UIAlertController(title: "Turn Ratio", message: "Enter a turn ratio from 0 to 100", preferredStyle: .alert)
+        
+        alert.addTextField { (textField) in
+            textField.text = "0"
+        }
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
+            let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
+            print("Text field: \(String(describing: textField?.text))");
+            
+            let x = String(describing: textField?.text);
+            ans = self.getContent(s: x)
+            print("ans")
+            print(ans)
+            
+            self.turnratio.frame = CGRect(x: 80, y: 85, width: 35, height: 30)
+            self.turnratio.text = ans
+            
+            self.steerView.addSubview(self.turnratio)
             
         }))
         
