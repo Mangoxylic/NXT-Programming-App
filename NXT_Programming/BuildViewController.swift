@@ -110,6 +110,7 @@ class BuildViewController: UIViewController, AddressDelegate {
     @IBOutlet weak var soundButtonUI: UIButton!
     @IBOutlet weak var idLabel: UILabel!
     
+    var scrollView: UIScrollView! = nil
     let startButton = UIButton()
     var startPoint = CGPoint()
     var nextPoint = CGPoint()
@@ -166,6 +167,15 @@ class BuildViewController: UIViewController, AddressDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //Create the scroll view
+        scrollView = UIScrollView(frame: CGRect(x: 0, y: 200, width: view.frame.width, height: 200))
+        scrollView.backgroundColor = UIColor(red:0.95, green:0.95, blue:0.95, alpha:1.0)
+        scrollView.contentSize = CGSize(width: view.bounds.size.width * 100, height: 128 * 2)
+        self.view.addSubview(scrollView)
+        scrollView.showsHorizontalScrollIndicator = true
+        //End scroll view stuff
+        
         createStartButton()
         medMotorView = createMedMotor()
         displayView = createDisplay()
@@ -213,9 +223,9 @@ class BuildViewController: UIViewController, AddressDelegate {
     }
     
     func createStartButton(){
-        startButton.frame = CGRect(x: 20, y: 370, width: 125, height: 100)
+        startButton.frame = CGRect(x: 0, y: 20, width: 125, height: 100)
         startButton.setTitle("start", for: UIControlState())
-        startButton.addTarget(self, action: #selector(dragStart(control:event:)), for: UIControlEvents.touchDragExit)
+//        startButton.addTarget(self, action: #selector(dragStart(control:event:)), for: UIControlEvents.touchDragExit)
         startButton.layer.borderColor = UIColor.yellow.cgColor
         startButton.backgroundColor = UIColor.blue
         startButton.layer.borderWidth = 1.2
@@ -224,8 +234,9 @@ class BuildViewController: UIViewController, AddressDelegate {
         startButton.setTitleColor(UIColor.white, for: UIControlState.normal)
         startButton.tag = 1
         startPoint = startButton.frame.origin
-        self.view.addSubview(startButton)
+        self.scrollView.addSubview(startButton)
         nextPoint = startPoint
+        nextPoint.x = nextPoint.x + 128
         startButton.addTarget(self, action: #selector(test), for: UIControlEvents.touchUpInside)
     }
     
@@ -486,7 +497,7 @@ class BuildViewController: UIViewController, AddressDelegate {
     }
     
     func updateUIViewOrder(){
-        var x = startPoint.x
+        var x = startPoint.x + 128
         let y = startPoint.y
         for view in viewSequence{
             view.frame.origin = CGPoint(x: x, y: y)
@@ -519,8 +530,6 @@ class BuildViewController: UIViewController, AddressDelegate {
         if(yLoc > 300 && yLoc < 440){
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
-                medMotorView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
-                nextPoint.x = nextPoint.x + 128
                 toAppend = true
             }
                 //if dragged to middle
@@ -551,10 +560,16 @@ class BuildViewController: UIViewController, AddressDelegate {
             newMM.setRotations(newRot: Int(rotations)!)
             newMM.setPort(newPort: port)
             if(toAppend){
-                objectSequence.append(newMM);
+                medMotorView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
+                nextPoint.x = nextPoint.x + 128
+                objectSequence.append(newMM)
+                medMotorView.removeFromSuperview()
+                scrollView.addSubview(medMotorView)
                 viewSequence.append(medMotorView)
             }else{
+                medMotorView.removeFromSuperview()
                 objectSequence.insert(newMM, at: index)
+                scrollView.addSubview(medMotorView)
                 viewSequence.insert(medMotorView, at: index)
             }
             updateUIViewOrder()
@@ -642,8 +657,6 @@ class BuildViewController: UIViewController, AddressDelegate {
         if(yLoc > 300 && yLoc < 440){
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
-                soundView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
-                nextPoint.x = nextPoint.x + 128
                 toAppend = true
             }
                 //if dragged to middle
@@ -669,9 +682,15 @@ class BuildViewController: UIViewController, AddressDelegate {
             newS.setTypeSound(newType: type)
             newS.setVolume(newVol: Int(volume)!)
             if(toAppend){
+                soundView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
+                nextPoint.x = nextPoint.x + 128
+                soundView.removeFromSuperview()
+                scrollView.addSubview(soundView)
                 objectSequence.append(newS);
                 viewSequence.append(soundView)
             }else{
+                soundView.removeFromSuperview()
+                scrollView.addSubview(soundView)
                 objectSequence.insert(newS, at: index)
                 viewSequence.insert(soundView, at: index)
             }
@@ -702,8 +721,6 @@ class BuildViewController: UIViewController, AddressDelegate {
         if(yLoc > 300 && yLoc < 440){
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
-                waitView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
-                nextPoint.x = nextPoint.x + 128
                 toAppend = true
             }
                 //if dragged to middle
@@ -728,13 +745,17 @@ class BuildViewController: UIViewController, AddressDelegate {
             let newW = WaitObject(ty: "wait");
             newW.setTime(newTime: Int(time)!);
             if(toAppend){
+                waitView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
+                nextPoint.x = nextPoint.x + 128
+                waitView.removeFromSuperview()
+                scrollView.addSubview(waitView)
                 objectSequence.append(newW);
                 viewSequence.append(waitView)
-                print("appending wait")
             }else{
+                waitView.removeFromSuperview()
+                scrollView.addSubview(waitView)
                 objectSequence.insert(newW, at: index)
                 viewSequence.insert(waitView, at: index)
-                print("inserting wait")
             }
             updateUIViewOrder()
             waitView = replaceView(type: "waitView")
@@ -758,8 +779,6 @@ class BuildViewController: UIViewController, AddressDelegate {
         if(yLoc > 300 && yLoc < 440){
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
-                startLoopView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
-                nextPoint.x = nextPoint.x + 128
                 toAppend = true
             }
                 //if dragged to middle
@@ -780,16 +799,22 @@ class BuildViewController: UIViewController, AddressDelegate {
         if(sender.state == UIGestureRecognizerState.ended){
             let labels = getLabelsInView(view: startLoopView)
             
-            
-            let newSL = StartLoopObject(ty: "startLoop");
+            let newSL = StartLoopObject(ty: "startLoop")
+            //MARK: Fix these hard coded values
             newSL.setLoops(newLoops: 1)
             newSL.setTime(newTime: 5)
             
             if(toAppend){
-                objectSequence.append(newSL);
+                startLoopView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
+                nextPoint.x = nextPoint.x + 128
+                objectSequence.append(newSL)
+                startLoopView.removeFromSuperview()
+                self.scrollView.addSubview(startLoopView)
                 viewSequence.append(startLoopView)
             }else{
                 objectSequence.insert(newSL, at: index)
+                startLoopView.removeFromSuperview()
+                self.scrollView.addSubview(startLoopView)
                 viewSequence.insert(startLoopView, at: index)
             }
             updateUIViewOrder()
@@ -815,8 +840,6 @@ class BuildViewController: UIViewController, AddressDelegate {
         if(yLoc > 300 && yLoc < 440){
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
-                endLoopView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
-                nextPoint.x = nextPoint.x + 128
                 toAppend = true
             }
                 //if dragged to middle
@@ -838,11 +861,18 @@ class BuildViewController: UIViewController, AddressDelegate {
             let newEL = EndLoopObject(ty: "endLoop");
             
             if(toAppend){
+                endLoopView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
+                nextPoint.x = nextPoint.x + 128
+                endLoopView.removeFromSuperview()
                 objectSequence.append(newEL)
+                scrollView.addSubview(endLoopView)
                 viewSequence.append(endLoopView)
             }else{
                 objectSequence.insert(newEL, at: index)
+                endLoopView.removeFromSuperview()
+                scrollView.addSubview(endLoopView)
                 viewSequence.insert(endLoopView, at: index)
+                
             }
             updateUIViewOrder()
             endLoopView = replaceView(type: "endLoopView")
