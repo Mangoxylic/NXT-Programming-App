@@ -1674,8 +1674,22 @@ class BuildViewController: UIViewController, AddressDelegate {
                 jsonArray.append(json)
             }else if(BrickObject.type == "startLoop"){
                 /***********************************/
-                //TODO: figure out how to do json for this
+                //TODO: startloop, endloop and steer jsons need testing
                 /***********************************/
+                var startLoopObj = StartLoopObject(ty: "startLoop")
+                startLoopObj = BrickObject as! StartLoopObject
+                let json: JSON = ["type":"startLoop", "loops": startLoopObj.loops , "time": startLoopObj.time]
+                jsonArray.append(json)
+            } else if(BrickObject.type == "endLoop") {
+                var endLoopObj = EndLoopObject(ty: "endLoop")
+                endLoopObj = BrickObject as! EndLoopObject
+                let json: JSON = ["type":"endLoop"]
+                jsonArray.append(json)
+            } else if (BrickObject.type == "steer") {
+                var steerObj = SteerObject(ty: "steer")
+                steerObj = BrickObject as! SteerObject
+                let json: JSON = ["type":"syncmotor", "brake": steerObj.brake , "power": steerObj.power, "revolutions": steerObj.revolutions, "leadport": steerObj.leadport, "followport": steerObj.followport, "turnratio":steerObj.turnratio]
+                jsonArray.append(json)
             }
         }
         
