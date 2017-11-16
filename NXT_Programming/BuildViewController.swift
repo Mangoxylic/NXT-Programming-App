@@ -183,6 +183,11 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     
     var speedInputView = UIView()
     
+    let speedMotorLabel = UILabel()
+    let rotationsMotorLabel = UILabel()
+    let brakeMotorLabel = UILabel()
+    let portMotorLabel = UILabel()
+    
     let speedMM = UILabel()
     let rotationMM = UILabel()
     let brakeMM = UILabel()
@@ -414,21 +419,21 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         name.text = "Motor"
         name.textColor = PrimaryOrange
         
-        let speedLabel = UILabel()
-        speedLabel.frame = CGRect(x: 0, y: 40, width: 120, height: 40)
-        speedLabel.text = "50"
-        
-        let rotationsLabel = UILabel()
-        rotationsLabel.frame = CGRect(x: 30, y: 40, width: 120, height: 40)
-        rotationsLabel.text = "5"
-        
-        let brakeLabel = UILabel()
-        brakeLabel.frame = CGRect(x: 60, y: 40, width: 120, height: 40)
-        brakeLabel.text = "true"
-        
-        let portLabel = UILabel()
-        portLabel.frame = CGRect(x: 90, y: 40, width: 120, height: 40)
-        portLabel.text = "A"
+//        let speedLabel = UILabel()
+//        speedLabel.frame = CGRect(x: 0, y: 40, width: 120, height: 40)
+//        speedLabel.text = "50"
+//
+//        let rotationsLabel = UILabel()
+//        rotationsLabel.frame = CGRect(x: 30, y: 40, width: 120, height: 40)
+//        rotationsLabel.text = "5"
+//
+//        let brakeLabel = UILabel()
+//        brakeLabel.frame = CGRect(x: 60, y: 40, width: 120, height: 40)
+//        brakeLabel.text = "true"
+//
+//        let portLabel = UILabel()
+//        portLabel.frame = CGRect(x: 90, y: 40, width: 120, height: 40)
+//        portLabel.text = "A"
         
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewMM(_:)))
@@ -446,10 +451,10 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.addSubview(brakeButton)
         tempView.addSubview(deleteButton)
         tempView.addSubview(portButton)
-        tempView.addSubview(speedLabel)
-        tempView.addSubview(rotationsLabel)
-        tempView.addSubview(brakeLabel)
-        tempView.addSubview(portLabel)
+//        tempView.addSubview(speedLabel)
+//        tempView.addSubview(rotationsLabel)
+//        tempView.addSubview(brakeLabel)
+//        tempView.addSubview(portLabel)
         self.view.addSubview(tempView)
         
         return tempView
@@ -796,10 +801,16 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         }
         if(sender.state == UIGestureRecognizerState.ended){
             let labels = getLabelsInView(view: medMotorView)
-            var speed = labels[6].text!
-            var rotations = labels[7].text!
-            var brake = labels[8].text!
-            var port = labels[9].text!
+//            var speed = labels[6].text!
+//            var rotations = labels[7].text!
+//            var brake = labels[8].text!
+//            var port = labels[9].text!
+//            let brakeBool = brake.lowercased() == "true"
+
+            var speed = speedMotorLabel.text!
+            var rotations = rotationsMotorLabel.text!
+            var brake = brakeMotorLabel.text!
+            var port = portMotorLabel.text!
             let brakeBool = brake.lowercased() == "true"
             
             let newMM = MotorObject(ty: "motor");
@@ -1269,17 +1280,20 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             print("ans")
             print(ans)
             
-            let index = self.getIndexOfBlock(xLoc: touchPoint!)
-            print("index: ")
-            print(index)
-            
-            let tempView = self.viewSequence[index]
-            let labels = self.getLabelsInView(view: tempView)
-            labels[5].text = ans
-            
-            let tempObj = self.objectSequence[index] as! MotorObject
-            tempObj.speed = Int(ans)!
-            
+//            let index = self.getIndexOfBlock(xLoc: touchPoint!)
+//            print("index: ")
+//            print(index)
+//
+//            let tempView = self.viewSequence[index]
+//            let labels = self.getLabelsInView(view: tempView)
+//            labels[5].text = ans
+//
+//            let tempObj = self.objectSequence[index] as! MotorObject
+//            tempObj.speed = Int(ans)!
+//
+            self.speedMotorLabel.frame = CGRect(x: 0, y: 40, width: 120, height: 40)
+            self.speedMotorLabel.text = ans
+            self.medMotorView.addSubview(self.speedMotorLabel)
         }))
         
         self.present(alert, animated: true, completion: nil)
@@ -1307,16 +1321,20 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             ans = self.getContent(s: x)
             print(ans)
             
-            let index = self.getIndexOfBlock(xLoc: touchPoint!)
-            print("index: ")
-            print(index)
+//            let index = self.getIndexOfBlock(xLoc: touchPoint!)
+//            print("index: ")
+//            print(index)
+//
+//            let tempView = self.viewSequence[index]
+//            let labels = self.getLabelsInView(view: tempView)
+//            labels[6].text = ans
+//
+//            let tempObj = self.objectSequence[index] as! MotorObject
+//            tempObj.rotations = Int(ans)!
+            self.rotationsMotorLabel.frame = CGRect(x: 30, y: 40, width: 120, height: 40)
+            self.rotationsMotorLabel.text = ans
             
-            let tempView = self.viewSequence[index]
-            let labels = self.getLabelsInView(view: tempView)
-            labels[6].text = ans
-            
-            let tempObj = self.objectSequence[index] as! MotorObject
-            tempObj.rotations = Int(ans)!
+            self.medMotorView.addSubview(self.rotationsMotorLabel)
         }))
         
         self.present(alert, animated: true, completion: nil)
@@ -1344,16 +1362,20 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             ans = self.getContent(s: x)
             print(ans)
             
-            let index = self.getIndexOfBlock(xLoc: touchPoint!)
-            print("index: ")
-            print(index)
+//            let index = self.getIndexOfBlock(xLoc: touchPoint!)
+//            print("index: ")
+//            print(index)
+//
+//            let tempView = self.viewSequence[index]
+//            let labels = self.getLabelsInView(view: tempView)
+//            labels[7].text = ans
+//
+//            let tempObj = self.objectSequence[index] as! MotorObject
+//            //tempObj.brake = BOOL(ans)
+            self.brakeMotorLabel.frame = CGRect(x: 60, y: 40, width: 120, height: 40)
+            self.brakeMotorLabel.text = ans
             
-            let tempView = self.viewSequence[index]
-            let labels = self.getLabelsInView(view: tempView)
-            labels[7].text = ans
-            
-            let tempObj = self.objectSequence[index] as! MotorObject
-            //tempObj.brake = BOOL(ans)
+            self.medMotorView.addSubview(self.brakeMotorLabel)
         }))
         
         self.present(alert, animated: true, completion: nil)
@@ -1381,16 +1403,20 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             ans = self.getContent(s: x)
             print(ans)
             
-            let index = self.getIndexOfBlock(xLoc: touchPoint!)
-            print("index: ")
-            print(index)
+//            let index = self.getIndexOfBlock(xLoc: touchPoint!)
+//            print("index: ")
+//            print(index)
+//
+//            let tempView = self.viewSequence[index]
+//            let labels = self.getLabelsInView(view: tempView)
+//            labels[8].text = ans
+//
+//            let tempObj = self.objectSequence[index] as! MotorObject
+//            tempObj.port = ans
+            self.portMotorLabel.frame = CGRect(x: 90, y: 40, width: 120, height: 40)
+            self.portMotorLabel.text = ans
             
-            let tempView = self.viewSequence[index]
-            let labels = self.getLabelsInView(view: tempView)
-            labels[8].text = ans
-            
-            let tempObj = self.objectSequence[index] as! MotorObject
-            tempObj.port = ans
+            self.medMotorView.addSubview(self.portMotorLabel)
             
         }))
         
