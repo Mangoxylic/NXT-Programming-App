@@ -209,13 +209,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "NXT_Programming/AddressTableViewController.swift"
-            timestampString = "531895129.292673"
+            timestampString = "532521509.540266"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "22"
             endingLineNumber = "22"
-            landmarkName = "AddressTableViewController"
-            landmarkType = "3">
+            landmarkName = "unknown"
+            landmarkType = "0">
             <Locations>
                <Location
                   shouldBeEnabled = "Yes"
@@ -395,7 +395,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "NXT_Programming/StartupViewController.swift"
-            timestampString = "532504843.572227"
+            timestampString = "532505676.723471"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "39"
