@@ -86,6 +86,9 @@ class StartLoopObject : BrickObject {
     var loops: Int = 0
     var time: Int = 0
     
+    var sensorType: String = ""
+    var checkAmount: Int = 0
+    
     init(ty: String) {
         super.init(typeObj: ty)
     }
@@ -129,7 +132,9 @@ class SteerObject : BrickObject {
     func setTurnRatio(newTurnRatio: Int){ turnratio = newTurnRatio }
 }
 
-class BuildViewController: UIViewController, AddressDelegate {
+class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+    
+    
     
     @IBOutlet weak var mediumMotorButtonUI: UIButton!
     @IBOutlet weak var largeMotorButtonUI: UIButton!
@@ -205,6 +210,12 @@ class BuildViewController: UIViewController, AddressDelegate {
     
     var collectionDelegate: CollectionDelegate?
     
+    //Picker View stuff
+    var picker = UIPickerView()
+    var sensorOptions: [String] = [String]()
+    var compOptions: [String] = [String]()
+    var portOptions: [String] = [String]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -234,6 +245,20 @@ class BuildViewController: UIViewController, AddressDelegate {
         self.view.addSubview(testButton)
         createTabs()
         loadViewTabOne()
+        
+        picker = UIPickerView(frame: CGRect(x: 250, y: 250, width: 400, height: 200))
+        picker.backgroundColor = UIColor.white
+        picker.showsSelectionIndicator = true
+        picker.delegate = self
+        picker.dataSource = self
+    
+        self.picker.delegate = self
+        self.picker.dataSource = self
+        sensorOptions = ["Touched", "Not touched", "Sound", "Light", "Ultrasonic"]
+        compOptions = [">", "<", "==", "!=", ">=", "<="]
+        portOptions = ["Port A", "Port B", "Port C", "Port 1", "Port 2", "Port 3"]
+        
+        //view.addSubview(picker)
     }
     
     override func didReceiveMemoryWarning() {
@@ -243,6 +268,44 @@ class BuildViewController: UIViewController, AddressDelegate {
     
     override var prefersStatusBarHidden: Bool {
         return true
+    }
+    
+    /*
+     PICKER VIEW STUFF
+ 
+     */
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 3
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        if (component == 0){
+            return sensorOptions.count
+        } else if(component == 1) {
+            return compOptions.count
+        } else {
+            return portOptions.count
+        }
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        if (component == 0){
+            return sensorOptions[row]
+        } else if(component == 1) {
+            return compOptions[row]
+        } else {
+            return portOptions[row]
+        }
+    }
+    
+    func displayPicker(){
+        
+        self.picker.isHidden = false
+    }
+    
+    func donePicker(){
+        self.picker.isHidden = true
+        print("\(picker.selectedRow(inComponent: 0))")
     }
     
     /**
@@ -429,6 +492,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         
         return tempView
     }
+
     
     func createStartLoop()->UIView{
         let tempView = UIView()
@@ -444,6 +508,11 @@ class BuildViewController: UIViewController, AddressDelegate {
         
         var timeButton = UIButton();
         timeButton = createButton(title: "time", _x: 40, _y: 80, _width: 35, _height: 40)
+        
+        var sensorBtn = UIButton()
+        sensorBtn = createButton(title: "+", _x: 60, _y: 120, _width: 35, _height: 40)
+        sensorBtn.addTarget(self, action: #selector(self.displayPicker), for: .touchUpInside)
+        
         
         let name = UILabel()
         name.frame = CGRect(x: 20, y: 25, width: 120, height: 40)
@@ -465,6 +534,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         tempView.addSubview(name)
         tempView.addSubview(loopsButton)
         tempView.addSubview(timeButton)
+        tempView.addSubview(sensorBtn)
         tempView.addSubview(deleteButton)
         self.view.addSubview(tempView)
         
@@ -1664,10 +1734,12 @@ class BuildViewController: UIViewController, AddressDelegate {
                     motorObj = BrickObject as! MotorObject
                     let json: JSON = ["type":"motor", "brake": motorObj.brake , "power": motorObj.speed, "revolutions": motorObj.rotations, "port": motorObj.port]
                     jsonArray.append(json)
-                }else if(BrickObject.type == "display"){
-                    let json: JSON = ["type":"DISPLAY", "brake": true, "power": 100, "revolutions":5, "port":"A"]
+                } else if (BrickObject.type == "steer") {
+                    var steerObj = SteerObject(ty: "steer")
+                    steerObj = BrickObject as! SteerObject
+                    let json: JSON = ["type":"syncmotor", "brake": steerObj.brake , "power": steerObj.power, "revolutions": steerObj.revolutions, "leadport": steerObj.leadport, "followport": steerObj.followport, "turnratio":steerObj.turnratio]
                     jsonArray.append(json)
-                }else if(BrickObject.type == "sound"){
+                } else if(BrickObject.type == "sound"){
                     var soundObj = SoundObject(ty: "sound")
                     soundObj = BrickObject as! SoundObject
                     let json: JSON = ["type": soundObj.type, "soundfile": soundObj.type]
@@ -1688,7 +1760,7 @@ class BuildViewController: UIViewController, AddressDelegate {
             let jsonString = jsonStr.description
             
             self.client.socket.emit("run code", jsonString)
-            //print(jsonString)
+            print(jsonString)
             print("Build request was sent to server with the selected mac address")
         }
     }
