@@ -1919,32 +1919,20 @@ class BuildViewController: UIViewController, AddressDelegate {
         let myButton:UIButton = sender as! UIButton
         let touches: Set<UITouch>? = event.touches(for: myButton)
         let touch: UITouch? = touches?.first
-        let touchPoint: CGPoint? = touch?.location(in: self.view)
-        print("touchPoint\(touchPoint)")
+        let touchPoint: CGPoint? = touch?.location(in: self.scrollView)
         
-        var beginXRange = startPoint.x
-        var endXRange = startPoint.x + 128
-        print("begin x range: ")
-        print(beginXRange)
-        print("end x range: ")
-        print(endXRange)
-        
-        let xLoc = touchPoint?.x
-        print("touchpoint x: ")
-        print(xLoc)
-        for i in  0..<viewSequence.count {
-            if(xLoc! < endXRange && xLoc! > beginXRange){
-                let view = viewSequence[i]
+        var i = 0
+        for view in viewSequence {
+            if(touchPoint != nil && view.frame.contains(touchPoint!)){
                 view.isHidden = true
                 viewSequence.remove(at: i)
                 objectSequence.remove(at: i)
                 updateUIViewOrder()
                 return
-            }else{
-                beginXRange += 128
-                endXRange += 128
             }
+            i = i + 1
         }
+
     }
     
     func getIndexOfBlock(xLoc: CGPoint)->Int{
