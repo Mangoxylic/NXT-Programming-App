@@ -1160,11 +1160,6 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     func draggedViewSteer(_ sender:UIPanGestureRecognizer){
         let labels = getLabelsInView(view: steerView)
         if(labels.count != 8){
-            for lab in labels {
-                
-                print(lab.text)
-            }
-            print("end")
             invalidInputAlert(_title: "Invalid input for Steer", msg: "Please enter all inputs")
             return
         }
