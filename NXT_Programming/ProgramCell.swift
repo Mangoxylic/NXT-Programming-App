@@ -14,5 +14,8 @@ class ProgramCell: UICollectionViewCell {
     override func draw(_ rect: CGRect) {
         super.draw(rect)
         self.layer.borderWidth = 1
+        self.layer.cornerRadius = 5
+        self.layer.masksToBounds = true
+        
     }
 }

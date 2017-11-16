@@ -366,8 +366,8 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         button.frame = CGRect(x: _x, y: _y, width: _width, height: _height)
         button.setTitle(title, for: UIControlState())
         button.backgroundColor = UIColor.clear
-        button.layer.borderColor = PrimaryOrange.cgColor
-        button.layer.borderWidth = 1.2
+        //button.layer.borderColor = PrimaryOrange.cgColor
+        //button.layer.borderWidth = 1.2
         button.layer.cornerRadius = 5
         button.layer.masksToBounds = true
         button.setTitleColor(PrimaryOrange, for: UIControlState.normal)
@@ -384,19 +384,24 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.frame = CGRect(x: 25, y: 525, width: 120, height: 160)
         
         var speedButton = UIButton()
-        speedButton = createButton(title: "speed", _x: 0, _y: 80, _width: 35, _height: 40);
+        speedButton = createButton(title: "", _x: 0, _y: 80, _width: 35, _height: 40);
+        speedButton.setImage(UIImage(named:"speed"), for: UIControlState.normal)
         
         var rotationButton = UIButton();
-        rotationButton = createButton(title: "rotation", _x: 40, _y: 80, _width: 35, _height: 40)
+        rotationButton = createButton(title: "", _x: 40, _y: 80, _width: 35, _height: 40)
+        rotationButton.setImage(UIImage(named:"rotate"), for: UIControlState.normal)
         
         var brakeButton = UIButton();
-        brakeButton = createButton(title: "brake", _x: 80, _y: 80, _width: 35, _height: 40)
+        brakeButton = createButton(title: "", _x: 80, _y: 80, _width: 35, _height: 40)
+        brakeButton.setImage(UIImage(named:"brake"), for: UIControlState.normal)
         
         var deleteButton = UIButton();
-        deleteButton = createButton(title: "X", _x: 80, _y: 0, _width: 20, _height: 30)
+        deleteButton = createButton(title: "", _x: 95, _y: 0, _width: 20, _height: 30)
+        deleteButton.setImage(UIImage(named:"trash"), for: UIControlState.normal)
         
         var portButton = UIButton();
-        portButton = createButton(title: "port", _x: 0, _y: 120, _width: 35, _height: 40)
+        portButton = createButton(title: "", _x: 0, _y: 120, _width: 35, _height: 40)
+        portButton.setImage(UIImage(named:"port"), for: UIControlState.normal)
         
         let name = UILabel()
         name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
@@ -498,9 +503,11 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         
         var playTypeButton = UIButton();
         playTypeButton = createButton(title: "type", _x: 40, _y: 140, _width: 35, _height: 40)
+        playTypeButton.setImage(UIImage(named:"play"), for: UIControlState.normal)
         
         var deleteButton = UIButton();
-        deleteButton = createButton(title: "X", _x: 80, _y: 0, _width: 20, _height: 30)
+        deleteButton = createButton(title: "", _x: 95, _y: 0, _width: 20, _height: 30)
+        deleteButton.setImage(UIImage(named:"trash"), for: UIControlState.normal)
         
         let playTypeLabel = UILabel()
         playTypeLabel.frame = CGRect(x: 30, y: 150, width: 120, height: 40)
@@ -543,13 +550,15 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.frame = CGRect(x: 295, y: 525, width: 120, height: 160)
         
         var timeButton = UIButton();
-        timeButton = createButton(title: "Wait Time", _x: 5, _y: 80, _width: 110, _height: 40)
+        timeButton = createButton(title: "", _x: 5, _y: 80, _width: 110, _height: 40)
         timeButton.setTitleColor(PrimaryGold, for: .normal)
         timeButton.backgroundColor = UIColor.white
         timeButton.addTarget(self, action: #selector(timeAlertWait(sender:event:)), for: UIControlEvents.touchUpInside)
+        timeButton.setImage(UIImage(named:"time"), for: UIControlState.normal)
         
         var deleteButton = UIButton();
-        deleteButton = createButton(title: "X", _x: 80, _y: 0, _width: 20, _height: 30)
+        deleteButton = createButton(title: "", _x: 95, _y: 0, _width: 20, _height: 30)
+        deleteButton.setImage(UIImage(named:"trash"), for: UIControlState.normal)
         
         let name = UILabel()
         name.frame = CGRect(x: 40, y: 25, width: 120, height: 40)
@@ -589,10 +598,11 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.frame = CGRect(x: 25, y: 525, width: 120, height: 160)
         
         var loopsButton = UIButton()
-        loopsButton = createButton(title: "# loops", _x: 5, _y: 80, _width: 110, _height: 40)
+        loopsButton = createButton(title: "", _x: 5, _y: 80, _width: 110, _height: 40)
         loopsButton.backgroundColor = UIColor.white
         loopsButton.setTitleColor(PrimaryBlue, for: .normal)
         loopsButton.addTarget(self, action: #selector(loopsAlertLoop(sender:event:)), for: UIControlEvents.touchUpInside)
+        loopsButton.setImage(UIImage(named:"loop"), for: UIControlState.normal)
         
         let name = UILabel()
         name.frame = CGRect(x: 20, y: 25, width: 120, height: 40)
@@ -610,8 +620,9 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.addGestureRecognizer(panGesture)
         
         var deleteButton = UIButton();
-        deleteButton = createButton(title: "X", _x: 95, _y: 0, _width: 20, _height: 30)
+        deleteButton = createButton(title: "", _x: 95, _y: 0, _width: 20, _height: 30)
         deleteButton.addTarget(self, action: #selector(deleteBlock(sender:event:)), for: UIControlEvents.touchUpInside)
+        deleteButton.setImage(UIImage(named:"trash"), for: UIControlState.normal)
         
         tempView.addSubview(name)
         tempView.addSubview(loopsButton)
@@ -642,8 +653,9 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         name.textColor = UIColor.white
         
         var deleteButton = UIButton();
-        deleteButton = createButton(title: "X", _x: 80, _y: 0, _width: 20, _height: 30)
+        deleteButton = createButton(title: "", _x: 95, _y: 0, _width: 20, _height: 30)
         deleteButton.addTarget(self, action: #selector(deleteBlock(sender:event:)), for: UIControlEvents.touchUpInside)
+        deleteButton.setImage(UIImage(named:"trash"), for: UIControlState.normal)
         
         tempView.addSubview(name)
         tempView.addSubview(deleteButton)
@@ -662,25 +674,32 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.frame = CGRect(x: 160, y: 525, width: 120, height: 160)
 
         var brakeButton = UIButton()
-        brakeButton = createButton(title: "brake", _x: 0, _y: 50, _width: 35, _height: 40);
+        brakeButton = createButton(title: "", _x: 0, _y: 50, _width: 35, _height: 40);
+        brakeButton.setImage(UIImage(named:"brake"), for: UIControlState.normal)
         
         var powerButton = UIButton();
-        powerButton = createButton(title: "power", _x: 40, _y: 50, _width: 35, _height: 40)
+        powerButton = createButton(title: "", _x: 40, _y: 50, _width: 35, _height: 40)
+        powerButton.setImage(UIImage(named:"power"), for: UIControlState.normal)
         
         var revolutionsButton = UIButton();
-        revolutionsButton = createButton(title: "revolutions", _x: 80, _y: 50, _width: 35, _height: 40)
+        revolutionsButton = createButton(title: "", _x: 80, _y: 50, _width: 35, _height: 40)
+        revolutionsButton.setImage(UIImage(named:"revolution"), for: UIControlState.normal)
         
         var leadportButton = UIButton();
-        leadportButton = createButton(title: "lead port", _x: 0, _y: 110, _width: 35, _height: 40)
+        leadportButton = createButton(title: "", _x: 0, _y: 110, _width: 35, _height: 40)
+        leadportButton.setImage(UIImage(named:"lead"), for: UIControlState.normal)
         
         var followportButton = UIButton();
         followportButton = createButton(title: "follow port", _x: 40, _y: 110, _width: 35, _height: 40)
+        followportButton.setImage(UIImage(named:"follow"), for: UIControlState.normal)
         
         var turnratioButton = UIButton();
-        turnratioButton = createButton(title: "turn ratio", _x: 80, _y: 110, _width: 35, _height: 40)
+        turnratioButton = createButton(title: "", _x: 80, _y: 110, _width: 35, _height: 40)
+        turnratioButton.setImage(UIImage(named:"ratio"), for: UIControlState.normal)
         
         var deleteButton = UIButton();
-        deleteButton = createButton(title: "X", _x: 100, _y: 0, _width: 20, _height: 30)
+        deleteButton = createButton(title: "", _x: 95, _y: 0, _width: 20, _height: 30)
+        deleteButton.setImage(UIImage(named:"trash"), for: UIControlState.normal)
         
         let name = UILabel()
         name.frame = CGRect(x: 40, y: 0, width: 120, height: 40)
