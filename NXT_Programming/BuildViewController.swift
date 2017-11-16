@@ -1050,9 +1050,9 @@ class BuildViewController: UIViewController, AddressDelegate {
     }
     
     func draggedViewSteer(_ sender:UIPanGestureRecognizer){
-        let labels = getLabelsInView(view: medMotorView)
+        let labels = getLabelsInView(view: steerView)
         if(labels.count != 14){
-            invalidInputAlert(_title: "Invalid input for Motor", msg: "Please enter inputs for speed, rotations and brake")
+            invalidInputAlert(_title: "Invalid input for Steer", msg: "Please enter all inputs")
             return
         }
         let translation = sender.translation(in: self.view)
