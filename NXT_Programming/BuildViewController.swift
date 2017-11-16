@@ -1805,9 +1805,8 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         var loopIterations = 0
         for i in  0..<objectSequence.count{
             if(objectSequence[i].type == "motor"){
-                var motorObj = MotorObject(ty: "motor")
-                motorObj = objectSequence[i] as! MotorObject
-                let json: JSON = ["type":"motor", "brake": motorObj.brake , "power": motorObj.speed, "revolutions": motorObj.rotations, "port":"A"]
+                let motorObj = objectSequence[i] as! MotorObject
+                let json: JSON = ["type":"motor", "brake": motorObj.brake , "power": motorObj.speed, "revolutions": motorObj.rotations, "port":motorObj.port]
                 if (loopOpened){
                     loopCommands.append(json)
                 } else {
