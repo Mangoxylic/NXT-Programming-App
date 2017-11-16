@@ -412,6 +412,7 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
         name.text = "Motor"
         name.textColor = PrimaryOrange
+        name.textAlignment = .center
         
 //        let speedLabel = UILabel()
 //        speedLabel.frame = CGRect(x: 0, y: 40, width: 120, height: 40)
@@ -523,6 +524,7 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
         name.text = "Sound"
         name.textColor = PrimaryOrange
+        name.textAlignment = .center
         
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewS(_:)))
@@ -576,6 +578,7 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         timeLabel.frame = CGRect(x:5, y: 45, width: 110, height: 40)
         timeLabel.text = "5"
         timeLabel.textColor = UIColor.white
+        timeLabel.textAlignment = .center
         
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewW(_:)))
@@ -620,6 +623,7 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         itLabel.frame = CGRect(x: 5, y: 45, width: 110, height: 40)
         itLabel.text = "3"
         itLabel.textColor = UIColor.white
+        itLabel.textAlignment = .center
         
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewSL(_:)))
@@ -727,9 +731,10 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         deleteButton.setImage(UIImage(named:"trash"), for: UIControlState.normal)
         
         let name = UILabel()
-        name.frame = CGRect(x: 40, y: 0, width: 120, height: 40)
+        name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
         name.text = "Steer"
         name.textColor = PrimaryOrange
+        name.textAlignment = .center
         
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewSteer(_:)))
@@ -1942,6 +1947,9 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
                     if !valid {
                         self.addAlert(title: "Error", message: "A program with the same name already exists")
                     } else {
+                        self.isNewProgram = false
+                        self.programName = field.text!
+                        self.realmID = ProgramManager.getID(programName: self.programName)
                         self.addAlert(title: "Success", message: "\(field.text!) has been saved")
                         self.collectionDelegate?.sendEventToCollectionView()
                     }
