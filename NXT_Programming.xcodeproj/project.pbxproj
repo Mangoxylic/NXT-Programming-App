@@ -20,6 +20,7 @@
 		DF18583F1FB8F9520008DA13 /* Client.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF18583E1FB8F9520008DA13 /* Client.swift */; };
 		DF1858471FB91F730008DA13 /* BuildViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1858461FB91F730008DA13 /* BuildViewController.swift */; };
 		DF227B321F733BD7007E0208 /* SocketIOManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF227B311F733BD7007E0208 /* SocketIOManager.swift */; };
+		DF29EA741FBE233B00F16AC5 /* PickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF29EA731FBE233B00F16AC5 /* PickerViewController.swift */; };
 		DF71BEC71F73A20400E2C9B3 /* ClientController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF71BEC61F73A20400E2C9B3 /* ClientController.swift */; };
 		DF8F317B1F98142C003EB957 /* ProgramManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF8F317A1F98142C003EB957 /* ProgramManager.swift */; };
 		DFC286331F7339B700FFEEA4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFC286321F7339B700FFEEA4 /* AppDelegate.swift */; };
@@ -67,6 +68,7 @@
 		DF18583E1FB8F9520008DA13 /* Client.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Client.swift; sourceTree = "<group>"; };
 		DF1858461FB91F730008DA13 /* BuildViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuildViewController.swift; sourceTree = "<group>"; };
 		DF227B311F733BD7007E0208 /* SocketIOManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SocketIOManager.swift; sourceTree = "<group>"; };
+		DF29EA731FBE233B00F16AC5 /* PickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PickerViewController.swift; sourceTree = "<group>"; };
 		DF71BEC61F73A20400E2C9B3 /* ClientController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClientController.swift; sourceTree = "<group>"; };
 		DF8EEF2357DDD8FA4F92504E /* Pods_NXT_Programming.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NXT_Programming.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DF8F317A1F98142C003EB957 /* ProgramManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProgramManager.swift; sourceTree = "<group>"; };
@@ -133,6 +135,7 @@
 				DF08E1511FAE89220056D8C8 /* AddressCell.swift */,
 				DF18583C1FB4681F0008DA13 /* NavigationController.swift */,
 				DF1858461FB91F730008DA13 /* BuildViewController.swift */,
+				DF29EA731FBE233B00F16AC5 /* PickerViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -416,6 +419,7 @@
 				DFC286611F733A2D00FFEEA4 /* SwiftyJSON.swift in Sources */,
 				DF08E1501FAE70F70056D8C8 /* PopoverViewController.swift in Sources */,
 				DFEFA41C1FA28D69001979CA /* StartupViewController.swift in Sources */,
+				DF29EA741FBE233B00F16AC5 /* PickerViewController.swift in Sources */,
 				DF8F317B1F98142C003EB957 /* ProgramManager.swift in Sources */,
 				DF08E14E1FAC28EA0056D8C8 /* AddressTableViewController.swift in Sources */,
 				DF00D8841FAA879800D1CE15 /* ProgramCell.swift in Sources */,

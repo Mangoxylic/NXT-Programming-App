@@ -2049,6 +2049,12 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             destination.addressDelegate = self
             self.tableDelegate = destination
         }
+        
+        if let destination = segue.destination as? PickerViewController {
+            destination.sensorOptions = self.sensorOptions
+            destination.compOptions = self.compOptions
+            destination.portOptions = self.portOptions
+        }
     }
     
     func draggedBlockInCode(_ sender:UIPanGestureRecognizer){
