@@ -1039,7 +1039,11 @@ class BuildViewController: UIViewController, AddressDelegate {
     }
     
     func draggedViewSteer(_ sender:UIPanGestureRecognizer){
-        
+        let labels = getLabelsInView(view: medMotorView)
+        if(labels.count != 14){
+            invalidInputAlert(_title: "Invalid input for Motor", msg: "Please enter inputs for speed, rotations and brake")
+            return
+        }
         let translation = sender.translation(in: self.view)
         
         steerView.center = CGPoint(x: steerView.center.x + translation.x, y: steerView.center.y + translation.y)
@@ -1077,12 +1081,12 @@ class BuildViewController: UIViewController, AddressDelegate {
         if(sender.state == UIGestureRecognizerState.ended){
             let labels = getLabelsInView(view: steerView)
             //TODO: Fix label numbers
-            let brake = labels[10].text!
-            let power = labels[11].text!
-            let revolutions = labels[12].text!
-            let leadport = labels[13].text!
-            let followport = labels[14].text!
-            let turnratio = labels[15].text!
+            let brake = labels[8].text!
+            let power = labels[9].text!
+            let revolutions = labels[10].text!
+            let leadport = labels[11].text!
+            let followport = labels[12].text!
+            let turnratio = labels[13].text!
             let brakeBool = brake.lowercased() == "true"
             
             let newS = SteerObject(ty: "steer");
