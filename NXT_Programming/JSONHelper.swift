@@ -17,25 +17,52 @@ class JSONHelper: NSObject {
             if let json = try? JSON(data: data) {
                 // Iterate through each json index
                 for (index, _) in json {
-                    //print(index);
                     // If we are on "commands" array
                     if index == "commands" {
                         // Iterate through the "commands" array (which contains dictionaries)
                         for (_, object) in json["commands"] {
-                            //print(index);
                             var dictionary: Dictionary<String, Any> = [:]
                             // Iterate through the dictionaries
                             for (key, value) in object {
-                                //print("Key: \(key)")
-                                //print("Value: \(value)")
-                                
+                                if key == "condition" {
+                                    var conditionDictionary: Dictionary<String, Any> = [:]
+                                    for (condition, conditionValue) in value {
+                                        // Array of commands from if/else
+                                        var ifArray: Array<Dictionary<String, Any>> = []
+                                        if condition == "if" || condition == "else" {
+                                            // Iterate through the array in the if/else
+                                            for (_, ifValue) in conditionValue {
+                                                var ifDictionary: Dictionary<String, Any> = [:]
+                                                // Iterate through each dictionary in the array
+                                                for (ifArrayKey, ifArrayValue) in ifValue {
+                                                    if self.stringIsInt(value: ifArrayValue.stringValue) {
+                                                        ifDictionary[ifArrayKey] = ifArrayValue.intValue
+                                                    } else if self.stringIsBool(value: ifArrayValue.stringValue) {
+                                                        ifDictionary[ifArrayKey] = ifArrayValue.boolValue
+                                                    } else {
+                                                        ifDictionary[ifArrayKey] = ifArrayValue.stringValue
+                                                    }
+                                                }
+                                                ifArray.append(ifDictionary)
+                                            }
+                                            conditionDictionary[condition] = ifArray
+                                        } else {
+                                            // Condition value will always be a Bool or an array
+                                            conditionDictionary[condition] = conditionValue.boolValue
+                                        }
+                                        dictionary[key] = conditionDictionary
+                                    }
                                 // If value is an integer, store it as an integer. Otherwise, store as a string
-                                if self.stringIsInt(value: value.stringValue) {
+                                } else if self.stringIsInt(value: value.stringValue) {
                                     dictionary[key] = value.intValue
+                                    //print(type(of: value.intValue))
                                 } else if self.stringIsBool(value: value.stringValue) {
+                                    //print(value)
                                     dictionary[key] = value.boolValue
+                                    //print(type(of: value.boolValue))
                                 } else {
                                     dictionary[key] = value.stringValue
+                                    //print(type(of: value.stringValue))
                                 }
                             }
                             // Add the resulting dictionary to the array

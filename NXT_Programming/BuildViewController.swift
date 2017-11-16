@@ -61,6 +61,7 @@ class DisplayObject : BrickObject{
 class SoundObject : BrickObject {
     var volume: Int = 0
     var typeSound: String = ""
+    var duration: Int = 0
     
     init(ty: String) {
         super.init(typeObj: ty)
@@ -70,6 +71,8 @@ class SoundObject : BrickObject {
     func setTypeSound(newType: String){typeSound = newType}
     func getVolume()->Int{return volume}
     func getTypeSound()->String{return typeSound}
+    func setDuration(newDur: Int){duration = newDur}
+    
 }
 class WaitObject : BrickObject{
     var time: Int = 0
@@ -84,7 +87,9 @@ class WaitObject : BrickObject{
 
 class StartLoopObject : BrickObject {
     var loops: Int = 0
-    var time: Int = 0
+    var sensor: String = ""
+    var param: Int = 0
+    var port: String = ""
     
     var sensorType: String = ""
     var checkAmount: Int = 0
@@ -94,9 +99,13 @@ class StartLoopObject : BrickObject {
     }
     
     func setLoops(newLoops: Int){ loops = newLoops }
-    func setTime(newTime: Int){ time = newTime }
     func getLoops()->Int{ return loops }
-    func getTime()->Int{ return time }
+    func setSensor(newSensor: String){sensor = newSensor }
+    func getSensor()->String{return sensor}
+    func setParam(newParam: Int){param = newParam}
+    func getParam()->Int{return param}
+    func setPort(newPort: String){port = newPort}
+    func getPort()->String{return port}
 }
 
 class EndLoopObject : BrickObject {
@@ -190,7 +199,6 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     var testButton = UIButton()
     
     var address = ""
-    
     
     // MARK: Variables Erick added
     let client = Client.sharedInstance
@@ -395,6 +403,22 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         name.text = "Motor"
         name.textColor = PrimaryOrange
         
+        let speedLabel = UILabel()
+        speedLabel.frame = CGRect(x: 0, y: 40, width: 120, height: 40)
+        speedLabel.text = "50"
+        
+        let rotationsLabel = UILabel()
+        rotationsLabel.frame = CGRect(x: 30, y: 40, width: 120, height: 40)
+        rotationsLabel.text = "5"
+        
+        let brakeLabel = UILabel()
+        brakeLabel.frame = CGRect(x: 60, y: 40, width: 120, height: 40)
+        brakeLabel.text = "true"
+        
+        let portLabel = UILabel()
+        portLabel.frame = CGRect(x: 90, y: 40, width: 120, height: 40)
+        portLabel.text = "A"
+        
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewMM(_:)))
         tempView.isUserInteractionEnabled = true
@@ -411,12 +435,27 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.addSubview(brakeButton)
         tempView.addSubview(deleteButton)
         tempView.addSubview(portButton)
+        tempView.addSubview(speedLabel)
+        tempView.addSubview(rotationsLabel)
+        tempView.addSubview(brakeLabel)
+        tempView.addSubview(portLabel)
         self.view.addSubview(tempView)
         
         return tempView
     }
     
-  
+    //Update the frequency here
+    func frequencyChange(_ sender: UISlider){
+        let labels = self.getLabelsInView(view: self.soundView)
+        
+    }
+    
+    //Update the frequency here
+    func durationChange(_ sender: UISlider){
+        let labels = self.getLabelsInView(view: self.soundView)
+        
+    }
+
     func createSound()->UIView{
         let tempView = UIView()
         tempView.backgroundColor = UIColor.clear
@@ -426,14 +465,35 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.layer.masksToBounds = true
         tempView.frame = CGRect(x: 295, y: 525, width: 120, height: 160)
         
-        var volumeButton = UIButton();
-        volumeButton = createButton(title: "volume", _x: 0, _y: 80, _width: 35, _height: 40)
+        var volumeSlider = UISlider(frame: CGRect(x: 5, y: 40, width: 110, height: 20))
+        volumeSlider.maximumValue = 1000
+        volumeSlider.minimumValue = 0
+        volumeSlider.value = 500
+        volumeSlider.addTarget(self, action: #selector(self.frequencyChange), for: .valueChanged)
+        
+        let volumeLabel = UILabel()
+        volumeLabel.frame = CGRect(x: 10, y: 55, width: 120, height: 40)
+        volumeLabel.text = "50"
+        
+        var durationSlider = UISlider(frame: CGRect(x: 5, y: 80, width: 110, height: 20))
+        durationSlider.maximumValue = 10
+        durationSlider.minimumValue = 0
+        durationSlider.value = 5
+        durationSlider.addTarget(self, action: #selector(self.frequencyChange), for: .valueChanged)
+        
+        let durationLabel = UILabel()
+        durationLabel.frame = CGRect(x: 10, y: 95, width: 120, height: 40)
+        durationLabel.text = "45"
         
         var playTypeButton = UIButton();
-        playTypeButton = createButton(title: "type", _x: 40, _y: 80, _width: 35, _height: 40)
+        playTypeButton = createButton(title: "type", _x: 40, _y: 140, _width: 35, _height: 40)
         
         var deleteButton = UIButton();
         deleteButton = createButton(title: "X", _x: 80, _y: 0, _width: 20, _height: 30)
+        
+        let playTypeLabel = UILabel()
+        playTypeLabel.frame = CGRect(x: 30, y: 150, width: 120, height: 40)
+        playTypeLabel.text = "file"
         
         let name = UILabel()
         name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
@@ -445,13 +505,16 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.isUserInteractionEnabled = true
         tempView.addGestureRecognizer(panGesture)
         
-        volumeButton.addTarget(self, action: #selector(volumeAlertSound(sender:event:)), for: UIControlEvents.touchUpInside)
         playTypeButton.addTarget(self, action: #selector(playTypeAlertSound(sender:event:)), for: UIControlEvents.touchUpInside)
         deleteButton.addTarget(self, action: #selector(deleteBlock(sender:event:)), for: UIControlEvents.touchUpInside)
         tempView.addSubview(name)
-        tempView.addSubview(volumeButton)
+        tempView.addSubview(volumeSlider)
         tempView.addSubview(playTypeButton)
         tempView.addSubview(deleteButton)
+        tempView.addSubview(durationSlider)
+        tempView.addSubview(volumeLabel)
+        tempView.addSubview(playTypeLabel)
+        tempView.addSubview(durationLabel)
         self.view.addSubview(tempView)
         
         return tempView
@@ -467,7 +530,10 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.frame = CGRect(x: 295, y: 525, width: 120, height: 160)
         
         var timeButton = UIButton();
-        timeButton = createButton(title: "time", _x: 0, _y: 80, _width: 35, _height: 40)
+        timeButton = createButton(title: "Wait Time", _x: 5, _y: 80, _width: 110, _height: 40)
+        timeButton.setTitleColor(PrimaryGold, for: .normal)
+        timeButton.backgroundColor = UIColor.white
+        timeButton.addTarget(self, action: #selector(timeAlertWait(sender:event:)), for: UIControlEvents.touchUpInside)
         
         var deleteButton = UIButton();
         deleteButton = createButton(title: "X", _x: 80, _y: 0, _width: 20, _height: 30)
@@ -477,17 +543,23 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         name.text = "Wait"
         name.textColor = UIColor.white
         
+        let timeLabel = UILabel()
+        timeLabel.frame = CGRect(x:5, y: 45, width: 110, height: 40)
+        timeLabel.text = "5"
+        timeLabel.textColor = UIColor.white
+        
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewW(_:)))
         tempView.isUserInteractionEnabled = true
         tempView.addGestureRecognizer(panGesture)
         
-        timeButton.addTarget(self, action: #selector(timeAlertWait(sender:event:)), for: UIControlEvents.touchUpInside)
         deleteButton.addTarget(self, action: #selector(deleteBlock(sender:event:)), for: UIControlEvents.touchUpInside)
         
         tempView.addSubview(name)
         tempView.addSubview(timeButton)
         tempView.addSubview(deleteButton)
+        tempView.addSubview(timeLabel)
+        
         self.view.addSubview(tempView)
         
         return tempView
@@ -504,20 +576,20 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.frame = CGRect(x: 25, y: 525, width: 120, height: 160)
         
         var loopsButton = UIButton()
-        loopsButton = createButton(title: "start loop", _x: 0, _y: 80, _width: 35, _height: 40)
-        
-        var timeButton = UIButton();
-        timeButton = createButton(title: "time", _x: 40, _y: 80, _width: 35, _height: 40)
-        
-        var sensorBtn = UIButton()
-        sensorBtn = createButton(title: "+", _x: 60, _y: 120, _width: 35, _height: 40)
-        sensorBtn.addTarget(self, action: #selector(self.displayPicker), for: .touchUpInside)
-        
+        loopsButton = createButton(title: "# loops", _x: 5, _y: 80, _width: 110, _height: 40)
+        loopsButton.backgroundColor = UIColor.white
+        loopsButton.setTitleColor(PrimaryBlue, for: .normal)
+        loopsButton.addTarget(self, action: #selector(loopsAlertLoop(sender:event:)), for: UIControlEvents.touchUpInside)
         
         let name = UILabel()
         name.frame = CGRect(x: 20, y: 25, width: 120, height: 40)
         name.text = "Start Loop"
         name.textColor = UIColor.white
+        
+        let itLabel = UILabel()
+        itLabel.frame = CGRect(x: 5, y: 45, width: 110, height: 40)
+        itLabel.text = "3"
+        itLabel.textColor = UIColor.white
         
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewSL(_:)))
@@ -525,17 +597,13 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.addGestureRecognizer(panGesture)
         
         var deleteButton = UIButton();
-        deleteButton = createButton(title: "X", _x: 80, _y: 0, _width: 20, _height: 30)
+        deleteButton = createButton(title: "X", _x: 95, _y: 0, _width: 20, _height: 30)
         deleteButton.addTarget(self, action: #selector(deleteBlock(sender:event:)), for: UIControlEvents.touchUpInside)
-        
-        loopsButton.addTarget(self, action: #selector(loopsAlertLoop(sender:event:)), for: UIControlEvents.touchUpInside)
-        timeButton.addTarget(self, action: #selector(timeAlertLoop(sender:event:)), for: UIControlEvents.touchUpInside)
         
         tempView.addSubview(name)
         tempView.addSubview(loopsButton)
-        tempView.addSubview(timeButton)
-        tempView.addSubview(sensorBtn)
         tempView.addSubview(deleteButton)
+        tempView.addSubview(itLabel)
         self.view.addSubview(tempView)
         
         return tempView
@@ -556,7 +624,7 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.addGestureRecognizer(panGesture)
         
         let name = UILabel()
-        name.frame = CGRect(x: 20, y: 65, width: 120, height: 40)
+        name.frame = CGRect(x: 20, y: 25, width: 120, height: 40)
         name.text = "End Loop"
         name.textColor = UIColor.white
         
@@ -667,14 +735,6 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     }
     
     func draggedViewMM(_ sender:UIPanGestureRecognizer){
-        let labels = getLabelsInView(view: medMotorView)
-        print("label count: " )
-        print(labels.count)
-        if(labels.count != 10){
-            invalidInputAlert(_title: "Invalid input for Motor", msg: "Please enter inputs for speed, rotations and brake")
-            return
-        }
-        
         let translation = sender.translation(in: self.view)
         
         medMotorView.center = CGPoint(x: medMotorView.center.x + translation.x, y: medMotorView.center.y + translation.y)
@@ -743,14 +803,59 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             medMotorView = replaceView(type: "medMotorView")
         }
     }
-
-    func draggedViewS(_ sender:UIPanGestureRecognizer){
-        let labels = getLabelsInView(view: soundView)
-        if(labels.count != 8){
-            invalidInputAlert(_title: "Invalid input for Sound", msg: "Please enter inputs for sound and type")
-            return
-        }
+    
+    func draggedViewD(_ sender:UIPanGestureRecognizer){
+        let translation = sender.translation(in: self.view)
+        displayView.center = CGPoint(x: displayView.center.x + translation.x, y: displayView.center.y + translation.y)
+        sender.setTranslation(CGPoint.zero, in: self.view)
         
+        let xLoc = displayView.center.x + translation.x
+        let yLoc = displayView.center.y + translation.y
+        
+        var index = Int()
+        index = viewSequence.count
+        var toAppend = Bool()
+        toAppend = false
+        
+        if(yLoc > 200 && yLoc < 400){
+            //if dragged to end
+            if(xLoc > (nextPoint.x + 128)){
+                displayView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
+                nextPoint.x = nextPoint.x + 128
+                toAppend = true
+            }
+                //if dragged to middle
+            else if(xLoc > startPoint.x && xLoc < nextPoint.x){
+                var beginXRange = startPoint.x
+                var endXRange = startPoint.x + 128
+                for i in  0..<viewSequence.count {
+                    if(xLoc < endXRange && xLoc > beginXRange){
+                        index = i
+                    }else{
+                        beginXRange += 128
+                        endXRange += 128
+                    }
+                }
+            }
+        }
+        if(sender.state == UIGestureRecognizerState.ended){
+            let newD = DisplayObject(ty: "display");
+            newD.setX(x: 10)
+            newD.setY(y: 10)
+            newD.setClear(newClear: true)
+            if(toAppend){
+                objectSequence.append(newD);
+                viewSequence.append(displayView)
+            }else{
+                objectSequence.insert(newD, at: index)
+                viewSequence.insert(displayView, at: index)
+            }
+            updateUIViewOrder()
+            displayView = replaceView(type: "displayView")
+        }
+    }
+    
+    func draggedViewS(_ sender:UIPanGestureRecognizer){
         let translation = sender.translation(in: self.view)
         soundView.center = CGPoint(x: soundView.center.x + translation.x, y: soundView.center.y + translation.y)
         sender.setTranslation(CGPoint.zero, in: self.view)
@@ -771,12 +876,14 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         }
         if(sender.state == UIGestureRecognizerState.ended){
             let labels = getLabelsInView(view: soundView)
-            let volume = labels[4].text!
-            let type = labels[5].text!
+            let volume = labels[5].text!
+            let type = labels[6].text!
+            let duration = labels[7].text!
             
             let newS = SoundObject(ty: "sound");
             newS.setTypeSound(newType: type)
             newS.setVolume(newVol: Int(volume)!)
+            newS.setDuration(newDur: Int(duration)!)
             var oldPanGesture = UIPanGestureRecognizer()
             oldPanGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewS(_:)))
             var newPanGesture = UIPanGestureRecognizer()
@@ -808,18 +915,13 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
                 objectSequence.insert(newS, at: index)
                 viewSequence.insert(soundView, at: index)
             }
+            print("views in count \(self.viewSequence.count)")
             updateUIViewOrder()
             soundView = replaceView(type: "soundView")
         }
     }
     
     func draggedViewW(_ sender:UIPanGestureRecognizer){
-        let labels = getLabelsInView(view: waitView)
-        if(labels.count != 8){
-            invalidInputAlert(_title: "Invalid input for Wait", msg: "Please enter input for time")
-            return
-        }
-        
         let translation = sender.translation(in: self.view)
         waitView.center = CGPoint(x: waitView.center.x + translation.x, y: waitView.center.y + translation.y)
         sender.setTranslation(CGPoint.zero, in: self.view)
@@ -901,13 +1003,16 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
                 toAppend = true
             }
         }
+        
         if(sender.state == UIGestureRecognizerState.ended){
             let labels = getLabelsInView(view: startLoopView)
+            var iterations: Int = 5
+            if (labels.count == 4){
+                iterations = Int(labels[3].text!)!
+            }
             
             let newSL = StartLoopObject(ty: "startLoop")
-            //MARK: Fix these hard coded values
-            newSL.setLoops(newLoops: 1)
-            newSL.setTime(newTime: 5)
+            newSL.setLoops(newLoops: iterations)
             var oldPanGesture = UIPanGestureRecognizer()
             oldPanGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewSL(_:)))
             var newPanGesture = UIPanGestureRecognizer()
@@ -1093,97 +1198,17 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         return str
     }
     
-    func clearAlertDisplay(sender: Any, event: UIEvent)->String{
-        var ans = String()
-        let alert = UIAlertController(title: "Some Title", message: "Enter a text", preferredStyle: .alert)
-        
-        alert.addTextField { (textField) in
-            textField.text = "default text"
-        }
-        
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
-            let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
-            print("Text field: \(String(describing: textField?.text))");
-            
-            let x = String(describing: textField?.text);
-            ans = self.getContent(s: x)
-            print("ans")
-            print(ans)
-            
-            let clear = UILabel()
-            clear.frame = CGRect(x: 0, y: 40, width: 35, height: 30)
-            clear.text = ans
-            
-            self.displayView.addSubview(clear)
-            
-        }))
-        
-        self.present(alert, animated: true, completion: nil)
-        return ans;
-    }
-    
-    func xAlertDisplay(sender: Any, event: UIEvent)->String{
-        var ans = String()
-        let alert = UIAlertController(title: "Some Title", message: "Enter a text", preferredStyle: .alert)
-        
-        alert.addTextField { (textField) in
-            textField.text = "default text"
-        }
-        
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
-            let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
-            print("Text field: \(String(describing: textField?.text))");
-            
-            let x = String(describing: textField?.text);
-            ans = self.getContent(s: x)
-            print(ans)
-            
-            let xLoc = UILabel()
-            xLoc.frame = CGRect(x: 40, y: 40, width: 35, height: 30)
-            xLoc.text = ans
-            
-            self.displayView.addSubview(xLoc)
-            
-        }))
-        
-        self.present(alert, animated: true, completion: nil)
-        return ans;
-    }
-    
-    func yAlertDisplay(sender: Any, event: UIEvent)->String{
-        var ans = String()
-        let alert = UIAlertController(title: "Some Title", message: "Enter a text", preferredStyle: .alert)
-        
-        alert.addTextField { (textField) in
-            textField.text = "default text"
-        }
-        
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
-            let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
-            print("Text field: \(String(describing: textField?.text))");
-            
-            let x = String(describing: textField?.text);
-            ans = self.getContent(s: x)
-            print(ans)
-            
-            let yLoc = UILabel()
-            yLoc.frame = CGRect(x: 80, y: 40, width: 35, height: 30)
-            yLoc.text = "10"
-            
-            self.displayView.addSubview(yLoc)
-            
-        }))
-        
-        self.present(alert, animated: true, completion: nil)
-        return ans;
-    }
-    
     func speedAlertMotor(sender: Any, event: UIEvent)->String{
+        let myButton:UIButton = sender as! UIButton
+        let touches: Set<UITouch>? = event.touches(for: myButton)
+        let touch: UITouch? = touches?.first
+        let touchPoint: CGPoint? = touch?.location(in: self.scrollView)
+        
         var ans = String()
-        let alert = UIAlertController(title: "Some Title", message: "Enter a text", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Motor Speed", message: "Enter a speed number from -100 to 100", preferredStyle: .alert)
         
         alert.addTextField { (textField) in
-            textField.text = "default text"
+            textField.text = "50"
         }
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
@@ -1195,11 +1220,16 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             print("ans")
             print(ans)
             
-            var speed = UILabel()
-            speed.frame = CGRect(x: 0, y: 40, width: 35, height: 30)
-            speed.text = ans
+            let index = self.getIndexOfBlock(xLoc: touchPoint!)
+            print("index: ")
+            print(index)
             
-            self.medMotorView.addSubview(speed)
+            let tempView = self.viewSequence[index]
+            let labels = self.getLabelsInView(view: tempView)
+            labels[5].text = ans
+            
+            let tempObj = self.objectSequence[index] as! MotorObject
+            tempObj.speed = Int(ans)!
             
         }))
         
@@ -1208,11 +1238,16 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     }
     
     func rotationsAlertMotor(sender: Any, event: UIEvent)->String{
+        let myButton:UIButton = sender as! UIButton
+        let touches: Set<UITouch>? = event.touches(for: myButton)
+        let touch: UITouch? = touches?.first
+        let touchPoint: CGPoint? = touch?.location(in: self.scrollView)
+        
         var ans = String()
-        let alert = UIAlertController(title: "Some Title", message: "Enter a text", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Motor Rotations", message: "Enter a rotation number greater than 1", preferredStyle: .alert)
         
         alert.addTextField { (textField) in
-            textField.text = "default text"
+            textField.text = "1"
         }
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
@@ -1223,12 +1258,16 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             ans = self.getContent(s: x)
             print(ans)
             
-            var rotation = UILabel()
-            rotation.frame = CGRect(x: 40, y: 40, width: 35, height: 30)
-            rotation.text = ans
+            let index = self.getIndexOfBlock(xLoc: touchPoint!)
+            print("index: ")
+            print(index)
             
-            self.medMotorView.addSubview(rotation)
+            let tempView = self.viewSequence[index]
+            let labels = self.getLabelsInView(view: tempView)
+            labels[6].text = ans
             
+            let tempObj = self.objectSequence[index] as! MotorObject
+            tempObj.rotations = Int(ans)!
         }))
         
         self.present(alert, animated: true, completion: nil)
@@ -1236,11 +1275,16 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     }
     
     func brakeAlertMotor(sender: Any, event: UIEvent)->String{
+        let myButton:UIButton = sender as! UIButton
+        let touches: Set<UITouch>? = event.touches(for: myButton)
+        let touch: UITouch? = touches?.first
+        let touchPoint: CGPoint? = touch?.location(in: self.scrollView)
+        
         var ans = String()
-        let alert = UIAlertController(title: "Some Title", message: "Enter a text", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Motor Brake", message: "Do you want to brake at the end? True or false.", preferredStyle: .alert)
         
         alert.addTextField { (textField) in
-            textField.text = "default text"
+            textField.text = "true"
         }
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
@@ -1251,12 +1295,16 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             ans = self.getContent(s: x)
             print(ans)
             
-            var brake = UILabel()
-            brake.frame = CGRect(x: 80, y: 40, width: 35, height: 30)
-            brake.text = ans
+            let index = self.getIndexOfBlock(xLoc: touchPoint!)
+            print("index: ")
+            print(index)
             
-            self.medMotorView.addSubview(brake)
+            let tempView = self.viewSequence[index]
+            let labels = self.getLabelsInView(view: tempView)
+            labels[7].text = ans
             
+            let tempObj = self.objectSequence[index] as! MotorObject
+            //tempObj.brake = BOOL(ans)
         }))
         
         self.present(alert, animated: true, completion: nil)
@@ -1264,11 +1312,16 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     }
     
     func portAlertMotor(sender: Any, event: UIEvent)->String{
+        let myButton:UIButton = sender as! UIButton
+        let touches: Set<UITouch>? = event.touches(for: myButton)
+        let touch: UITouch? = touches?.first
+        let touchPoint: CGPoint? = touch?.location(in: self.scrollView)
+        
         var ans = String()
-        let alert = UIAlertController(title: "Some Title", message: "Enter a text", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Motor Port", message: "Please enter a port A to C for the motor", preferredStyle: .alert)
         
         alert.addTextField { (textField) in
-            textField.text = "default text"
+            textField.text = "A"
         }
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
@@ -1279,11 +1332,16 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             ans = self.getContent(s: x)
             print(ans)
             
-            var port = UILabel()
-            port.frame = CGRect(x: 80, y: 80, width: 35, height: 30)
-            port.text = ans
+            let index = self.getIndexOfBlock(xLoc: touchPoint!)
+            print("index: ")
+            print(index)
             
-            self.medMotorView.addSubview(port)
+            let tempView = self.viewSequence[index]
+            let labels = self.getLabelsInView(view: tempView)
+            labels[8].text = ans
+            
+            let tempObj = self.objectSequence[index] as! MotorObject
+            tempObj.port = ans
             
         }))
         
@@ -1292,67 +1350,70 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     }
     
     func volumeAlertSound(sender: Any, event: UIEvent)->String{
+        let myButton:UIButton = sender as! UIButton
+        let touches: Set<UITouch>? = event.touches(for: myButton)
+        let touch: UITouch? = touches?.first
+        let touchPoint: CGPoint? = touch?.location(in: self.scrollView)
+        let views = self.viewSequence
+        let objs = self.objectSequence
         var ans = String()
-        let alert = UIAlertController(title: "Some Title", message: "Enter a text", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Sound Pitch", message: "Enter a frequency from 0 to 1000", preferredStyle: .alert)
         
         alert.addTextField { (textField) in
-            textField.text = "default text"
+            textField.text = "100"
         }
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
             let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
-            print("Text field: \(String(describing: textField?.text))");
-            
             let x = String(describing: textField?.text);
             ans = self.getContent(s: x)
-            print(ans)
             
-            let volume = UILabel()
-            volume.frame = CGRect(x: 0, y: 40, width: 35, height: 30)
-            volume.text = ans
+            let index = self.getIndexOfBlock(xLoc: touchPoint!)
+            let tempView = views[index]
+            let labels = self.getLabelsInView(view: tempView)
+            labels[5].text = ans
             
-            self.soundView.addSubview(volume)
-            
+            let tempObj = objs[index] as! SoundObject
+            tempObj.volume = Int(ans)!
         }))
-        
         self.present(alert, animated: true, completion: nil)
         return ans;
     }
     
     func playTypeAlertSound(sender: Any, event: UIEvent)->String{
         var ans = String()
-        let alert = UIAlertController(title: "Some Title", message: "Enter a text", preferredStyle: .alert)
-        
+        let alert = UIAlertController(title: "Sound File", message: "Enter a file name to play sound", preferredStyle: .alert)
+
         alert.addTextField { (textField) in
-            textField.text = "default text"
+            textField.text = ""
         }
-        
+
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
             let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
             print("Text field: \(String(describing: textField?.text))");
-            
+
             let x = String(describing: textField?.text);
             ans = self.getContent(s: x)
             print(ans)
-            
+
             let playType = UILabel()
             playType.frame = CGRect(x: 40, y: 40, width: 35, height: 30)
             playType.text = ans
-            
+
             self.soundView.addSubview(playType)
-            
+
         }))
-        
+
         self.present(alert, animated: true, completion: nil)
         return ans;
     }
     
     func timeAlertWait(sender: Any, event: UIEvent)->String{
         var ans = String()
-        let alert = UIAlertController(title: "Some Title", message: "Enter a text", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Wait time", message: "How many seconds to wait?", preferredStyle: .alert)
         
         alert.addTextField { (textField) in
-            textField.text = "default text"
+            textField.text = "5"
         }
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
@@ -1361,13 +1422,18 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             
             let x = String(describing: textField?.text);
             ans = self.getContent(s: x)
-            print(ans)
             
-            let time = UILabel()
-            time.frame = CGRect(x: 0, y: 40, width: 35, height: 30)
-            time.text = ans
-            
-            self.waitView.addSubview(time)
+            if (self.waitView.subviews.count == 4){
+                var timeLbl = self.waitView.subviews[3] as! UILabel
+                timeLbl.text = ans
+            } else {
+                let time = UILabel()
+                time.frame = CGRect(x: 5, y: 45, width: 110, height: 30)
+                time.text = "\(ans)"
+                time.textColor = UIColor.white
+                
+                self.waitView.addSubview(time)
+            }
             
         }))
         
@@ -1375,55 +1441,61 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         return ans;
     }
     
-    func timeAlertLoop(sender: Any, event: UIEvent)->String{
-        var ans = String()
-        let alert = UIAlertController(title: "Some Title", message: "Enter a text", preferredStyle: .alert)
-        
-        alert.addTextField { (textField) in
-            textField.text = "default text"
-        }
-        
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
-            let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
-            print("Text field: \(String(describing: textField?.text))");
-            
-            let x = String(describing: textField?.text);
-            ans = self.getContent(s: x)
-            print(ans)
-            
-            let time = UILabel()
-            time.frame = CGRect(x: 40, y: 40, width: 35, height: 30)
-            time.text = ans
-            
-            self.startLoopView.addSubview(time)
-            
-        }))
-        
-        self.present(alert, animated: true, completion: nil)
-        return ans;
-    }
+//    func typeAlertLoop(sender: Any, event: UIEvent)->String{
+//        var ans = String()
+//        let alert = UIAlertController(title: "Some Title", message: "Enter a text", preferredStyle: .alert)
+//
+//        alert.addTextField { (textField) in
+//            textField.text = "default text"
+//        }
+//
+//        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
+//            let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
+//            print("Text field: \(String(describing: textField?.text))");
+//
+//            let x = String(describing: textField?.text);
+//            ans = self.getContent(s: x)
+//            print(ans)
+//
+//            let time = UILabel()
+//            time.frame = CGRect(x: 40, y: 40, width: 35, height: 30)
+//            time.text = ans
+//
+//            self.startLoopView.addSubview(time)
+//
+//        }))
+//
+//        self.present(alert, animated: true, completion: nil)
+//        return ans;
+//    }
     
     func loopsAlertLoop(sender: Any, event: UIEvent)->String{
         var ans = String()
-        let alert = UIAlertController(title: "Some Title", message: "Enter a text", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Loops", message: "How many times should this loop?", preferredStyle: .alert)
         
         alert.addTextField { (textField) in
-            textField.text = "default text"
+            textField.text = "2"
         }
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { [weak alert] (_) in
             let textField = alert?.textFields![0] // Force unwrapping because we know it exists.
-            print("Text field: \(String(describing: textField?.text))");
             
             let x = String(describing: textField?.text);
             ans = self.getContent(s: x)
-            print(ans)
             
-            let loops = UILabel()
-            loops.frame = CGRect(x: 0, y: 40, width: 35, height: 30)
-            loops.text = ans
+            if (self.startLoopView.subviews.count == 4){
+                let timeLbl = self.startLoopView.subviews[3] as! UILabel
+                timeLbl.text = ans
+            } else {
+                let loops = UILabel()
+                loops.frame = CGRect(x: 10, y: 55, width: 35, height: 30)
+                loops.textColor = UIColor.white
+                loops.text = ans
+                
+                self.startLoopView.addSubview(loops)
+            }
             
-            self.startLoopView.addSubview(loops)
+            
             
         }))
         
@@ -1611,9 +1683,11 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         //        for BrickObject in objectSequence {
         //            print(BrickObject)
         //        }
+        print("viewSequence count")
+        print(viewSequence.count)
                 print("printing view labels")
                 //for _view in viewSequence{
-                    let labels = getLabelsInView(view: medMotorView)
+                    let labels = getLabelsInView(view: waitView)
                     for label in labels {
                         print(label.text)
                     }
@@ -1669,96 +1743,103 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     
     // MARK: IBActions
     
-    @IBAction func sendToServer(){
+    func sendToServer()->String{
         var jsonArray = [JSON]()
-        
-        for BrickObject in objectSequence {
-            print(BrickObject.type)
-            if(BrickObject.type == "motor"){
+        var loopOpened = false
+        var loopCommands = [JSON]()
+        var loopIterations = 0
+        for i in  0..<objectSequence.count{
+            if(objectSequence[i].type == "motor"){
                 var motorObj = MotorObject(ty: "motor")
-                motorObj = BrickObject as! MotorObject
+                motorObj = objectSequence[i] as! MotorObject
                 let json: JSON = ["type":"motor", "brake": motorObj.brake , "power": motorObj.speed, "revolutions": motorObj.rotations, "port":"A"]
-                jsonArray.append(json)
-            }else if(BrickObject.type == "display"){
-                let json: JSON = ["type":"DISPLAY", "brake": true, "power": 100, "revolutions":5, "port":"A"]
-                jsonArray.append(json)
-            }else if(BrickObject.type == "sound"){
+                if (loopOpened){
+                    loopCommands.append(json)
+                } else {
+                    jsonArray.append(json)
+                }
+            }else if(objectSequence[i].type == "playsound"){
                 var soundObj = SoundObject(ty: "sound")
-                soundObj = BrickObject as! SoundObject
+                soundObj = objectSequence[i] as! SoundObject
                 let json: JSON = ["type": soundObj.type, "soundfile": soundObj.type]
-                jsonArray.append(json)
-            }else if(BrickObject.type == "wait"){
+                if (loopOpened){
+                    loopCommands.append(json)
+                } else {
+                    jsonArray.append(json)
+                }
+            }else if(objectSequence[i].type == "wait"){
                 var waitObj = WaitObject(ty: "wait")
-                waitObj = BrickObject as! WaitObject
+                waitObj = objectSequence[i] as! WaitObject
                 let json: JSON = ["type":"wait", "seconds": waitObj.time]
+                if (loopOpened){
+                    loopCommands.append(json)
+                } else {
+                    jsonArray.append(json)
+                }
+            }else if(objectSequence[i].type == "startLoop"){
+                loopOpened = true
+                let loopObj = objectSequence[i] as! StartLoopObject
+                loopIterations = loopObj.getLoops()
+            }else if(objectSequence[i].type == "endLoop"){
+                loopOpened = false
+                let json: JSON = ["type": "loop", "iterations": loopIterations, "commands": loopCommands]
                 jsonArray.append(json)
-            }else if(BrickObject.type == "startLoop"){
-                /***********************************/
-                //TODO: startloop, endloop and steer jsons need testing
-                /***********************************/
-                var startLoopObj = StartLoopObject(ty: "startLoop")
-                startLoopObj = BrickObject as! StartLoopObject
-                let json: JSON = ["type":"startLoop", "loops": startLoopObj.loops , "time": startLoopObj.time]
-                jsonArray.append(json)
-            } else if(BrickObject.type == "endLoop") {
-                var endLoopObj = EndLoopObject(ty: "endLoop")
-                endLoopObj = BrickObject as! EndLoopObject
-                let json: JSON = ["type":"endLoop"]
-                jsonArray.append(json)
-            } else if (BrickObject.type == "steer") {
+                loopIterations = 0
+                loopCommands = []
+            } else if (objectSequence[i].type == "steer") {
                 var steerObj = SteerObject(ty: "steer")
-                steerObj = BrickObject as! SteerObject
+                steerObj = objectSequence[i] as! SteerObject
                 let json: JSON = ["type":"syncmotor", "brake": steerObj.brake , "power": steerObj.power, "revolutions": steerObj.revolutions, "leadport": steerObj.leadport, "followport": steerObj.followport, "turnratio":steerObj.turnratio]
-                jsonArray.append(json)
+                if (loopOpened){
+                    loopCommands.append(json)
+                } else {
+                    jsonArray.append(json)
+                }
             }
         }
         
-        let jsonStr: JSON = ["address" : "00:16:53:19:1E:AC", "commands" : jsonArray]
-        let jsonString = jsonStr.description
-        self.client.socket.emit("run code", jsonString)
+        for BrickObject in objectSequence {
+            print(BrickObject.type)
+//            else if(BrickObject.type == "startLoop"){
+//                /***********************************/
+//                //TODO: startloop, endloop and steer jsons need testing
+//                /***********************************/
+//                var startLoopObj = StartLoopObject(ty: "startLoop")
+//                startLoopObj = BrickObject as! StartLoopObject
+//                let json = JSON()
+//                if(startLoopObj.sensor == "touch"){
+//                    json = ["type":"touch", "port": startLoopObj.port, "condition:" ]
+//                }
+//                jsonArray.append(json)
+//            } else if(BrickObject.type == "endLoop") {
+//                var endLoopObj = EndLoopObject(ty: "endLoop")
+//                endLoopObj = BrickObject as! EndLoopObject
+//                let json: JSON = ["type":"endLoop"]
+//                jsonArray.append(json)
+//            } else if (BrickObject.type == "steer") {
+//                var steerObj = SteerObject(ty: "steer")
+//                steerObj = BrickObject as! SteerObject
+//                let json: JSON = ["type":"syncmotor", "brake": steerObj.brake , "power": steerObj.power, "revolutions": steerObj.revolutions, "leadport": steerObj.leadport, "followport": steerObj.followport, "turnratio":steerObj.turnratio]
+//                jsonArray.append(json)
+//            }
+        }
         
-        print("SENDING THIS JSON: " )
-        print(jsonString.description)
+        let jsonStr: JSON = ["address" : self.chosenMacAddress, "commands" : jsonArray]
+        let jsonString = jsonStr.description
+        
+        print(jsonString)
+        
+        return jsonString
+//        self.client.socket.emit("run code", jsonString)
+//
+//        print("SENDING THIS JSON: " )
+//        print(jsonString.description)
     }
     
     @IBAction func buildBarButtonDidPress(_ sender: UIBarButtonItem) {
         if self.chosenMacAddressIndex > -1 && self.client.connected {
             //print("Mac address that is selected: \(self.chosenMacAddress)")
-            
-            var jsonArray = [JSON]()
-            
-            for BrickObject in objectSequence {
-                print(BrickObject.type)
-                if(BrickObject.type == "motor"){
-                    var motorObj = MotorObject(ty: "motor")
-                    motorObj = BrickObject as! MotorObject
-                    let json: JSON = ["type":"motor", "brake": motorObj.brake , "power": motorObj.speed, "revolutions": motorObj.rotations, "port": motorObj.port]
-                    jsonArray.append(json)
-                } else if (BrickObject.type == "steer") {
-                    var steerObj = SteerObject(ty: "steer")
-                    steerObj = BrickObject as! SteerObject
-                    let json: JSON = ["type":"syncmotor", "brake": steerObj.brake , "power": steerObj.power, "revolutions": steerObj.revolutions, "leadport": steerObj.leadport, "followport": steerObj.followport, "turnratio":steerObj.turnratio]
-                    jsonArray.append(json)
-                } else if(BrickObject.type == "sound"){
-                    var soundObj = SoundObject(ty: "sound")
-                    soundObj = BrickObject as! SoundObject
-                    let json: JSON = ["type": soundObj.type, "soundfile": soundObj.type]
-                    jsonArray.append(json)
-                }else if(BrickObject.type == "wait"){
-                    var waitObj = WaitObject(ty: "wait")
-                    waitObj = BrickObject as! WaitObject
-                    let json: JSON = ["type":"wait", "seconds": waitObj.time]
-                    jsonArray.append(json)
-                }else if(BrickObject.type == "startLoop"){
-                    /***********************************/
-                    //TODO: figure out how to do json for this
-                    /***********************************/
-                }
-            }
-            
-            let jsonStr: JSON = ["address" : self.chosenMacAddress, "commands" : jsonArray]
-            let jsonString = jsonStr.description
-            
+            let jsonString = sendToServer()
             self.client.socket.emit("run code", jsonString)
             print(jsonString)
             print("Build request was sent to server with the selected mac address")
@@ -1767,37 +1848,8 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     
     // NEED THIS IBAction FUNCTION TO SAVE A PROGRAM
     @IBAction func saveBarButtonDidPress(_ sender: UIBarButtonItem) {
-        var jsonArray = [JSON]()
         
-        for BrickObject in objectSequence {
-            print(BrickObject.type)
-            if(BrickObject.type == "motor"){
-                var motorObj = MotorObject(ty: "motor")
-                motorObj = BrickObject as! MotorObject
-                let json: JSON = ["type":"motor", "brake": motorObj.brake , "power": motorObj.speed, "revolutions": motorObj.rotations, "port":"A"]
-                jsonArray.append(json)
-            }else if(BrickObject.type == "display"){
-                let json: JSON = ["type":"DISPLAY", "brake": true, "power": 100, "revolutions":5, "port":"A"]
-                jsonArray.append(json)
-            }else if(BrickObject.type == "sound"){
-                var soundObj = SoundObject(ty: "sound")
-                soundObj = BrickObject as! SoundObject
-                let json: JSON = ["type": soundObj.type, "soundfile": soundObj.type]
-                jsonArray.append(json)
-            }else if(BrickObject.type == "wait"){
-                var waitObj = WaitObject(ty: "wait")
-                waitObj = BrickObject as! WaitObject
-                let json: JSON = ["type":"wait", "seconds": waitObj.time]
-                jsonArray.append(json)
-            }else if(BrickObject.type == "startLoop"){
-                /***********************************/
-                //TODO: figure out how to do json for this
-                /***********************************/
-            }
-        }
-        
-        let jsonStr: JSON = ["address" : self.chosenMacAddress, "commands" : jsonArray]
-        let jsonString = jsonStr.description
+        let jsonString = sendToServer()
         
         
         if self.isNewProgram! {
@@ -1895,8 +1947,8 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     }
     
     func getIndexOfBlock(xLoc: CGPoint)->Int{
-        var beginXRange = startPoint.x
-        var endXRange = startPoint.x + 128
+        var beginXRange = startPoint.x + 128
+        var endXRange = startPoint.x + 128 + 128
         
         print("begin x range: ")
         print(beginXRange)
@@ -1971,35 +2023,67 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     }
     
     func draggedBlockInCode(_ sender:UIPanGestureRecognizer){
-        //        let translation = sender.translation(in: self.view)
-        //        if (sender.state == .began){
-        //
-        //        }
-        //
-        //        let loc = sender.location(in: scrollView)
-        //        var touchedView: UIView? = nil
-        //        for view in viewSequence {
-        //            if(view.frame.contains(loc)){
-        //                touchedView = view
-        //            }
-        //        }
-        //        if (touchedView != nil){
-        //            touchedView!.center = CGPoint(x: touchedView!.center.x + translation.x, y: touchedView!.center.y + translation.y)
-        //            sender.setTranslation(CGPoint.zero, in: self.view)
-        //
-        //            let xLoc = touchedView!.center.x + translation.x
-        //            let yLoc = touchedView!.center.y + translation.y
-        //
-        //            if (sender.state == .ended){
-        //                for view in viewSequence {
-        //                    if (view.frame.contains(touchedView!.center)){
-        //                        print("Dragged onto another block")
-        //                    }
-        //                }
-        //            }
-        //        }
-        //
+//                let translation = sender.translation(in: self.view)
+//                if (sender.state == .began){
+//
+//                }
+//
+//                let loc = sender.location(in: scrollView)
+//                var touchedView: UIView? = nil
+//                for view in viewSequence {
+//                    if(view.frame.contains(loc)){
+//                        touchedView = view
+//                    }
+//                }
+//                if (touchedView != nil){
+//                    touchedView!.center = CGPoint(x: touchedView!.center.x + translation.x, y: touchedView!.center.y + translation.y)
+//                    sender.setTranslation(CGPoint.zero, in: self.view)
+//
+//                    let xLoc = touchedView!.center.x + translation.x
+//                    let yLoc = touchedView!.center.y + translation.y
+//
+//                    if (sender.state == .ended){
+//                        for view in viewSequence {
+//                            if (view.frame.contains(touchedView!.center)){
+//                                print("Dragged onto another block")
+//                            }
+//                        }
+//                    }
+//                }
+//
         
+    }
+    
+    func openSavedFile(){
+        var jsonHelper = JSONHelper()
+        let savedArray = JSONHelper.parseJSONWith(json: programJSON) //is a Array<Dictionary<String, Any>>
+        for sa in savedArray{
+            let typeView = sa["type"] as! String!
+            if(typeView == "motor"){
+                let tempView = createMedMotor()
+                let labels = getLabelsInView(view: tempView)
+                labels[6].text = sa["power"] as! String!
+                labels[7].text = sa["revolutions"] as! String!
+                labels[8].text = sa["brake"] as! String!
+                labels[9].text = sa["port"] as! String!
+                viewSequence.append(tempView)
+            }else if(typeView == "playsound"){
+                let tempView = createSound()
+                let labels = getLabelsInView(view: tempView)
+                labels[5].text = sa["frequency"] as! String!
+                labels[6].text = sa["soundfile"] as! String!
+                labels[7].text = sa["duration"] as! String!
+                viewSequence.append(tempView)
+            }else if(typeView == "touch"){
+                
+            }else if(typeView == "wait"){
+                let tempView = createWait()
+                let labels = getLabelsInView(view: tempView)
+                labels[3].text = sa["duration"] as! String!
+                viewSequence.append(tempView)
+            }
+        }
+        updateUIViewOrder()
     }
     
 }
