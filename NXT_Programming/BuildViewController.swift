@@ -139,6 +139,7 @@ class BuildViewController: UIViewController, AddressDelegate {
     @IBOutlet weak var SteerButtonUI: UIButton!
     @IBOutlet weak var idLabel: UILabel!
     
+    //Color UI
     let PrimaryOrange = UIColor(red:0.95, green:0.40, blue:0.19, alpha:1.0)
     let PrimaryRed = UIColor(red:0.84, green:0.20, blue:0.19, alpha:1.0)
     let PrimaryBlue = UIColor(red:0.22, green:0.53, blue:0.59, alpha:1.0)
@@ -165,9 +166,6 @@ class BuildViewController: UIViewController, AddressDelegate {
     var endLoopView = UIView()
     var steerView = UIView()
     var viewSequence = [UIView]()
-//    var testView = OverallView()
-//    var testProfileView = ProfileView()
-//    var testProfileView2 = ProfileView()
     
     var speedInputView = UIView()
     
@@ -211,9 +209,9 @@ class BuildViewController: UIViewController, AddressDelegate {
         super.viewDidLoad()
         
         //Create the scroll view
-        scrollView = UIScrollView(frame: CGRect(x: 0, y: 200, width: view.frame.width, height: 220))
+        scrollView = UIScrollView(frame: CGRect(x: 0, y: 200, width: view.frame.width, height: 240))
         scrollView.backgroundColor = UIColor(red:0.95, green:0.95, blue:0.95, alpha:1.0)
-        scrollView.contentSize = CGSize(width: view.bounds.size.width * 100, height: 200)
+        scrollView.contentSize = CGSize(width: view.bounds.size.width * 100, height: 240)
         self.view.addSubview(scrollView)
         scrollView.showsHorizontalScrollIndicator = true
         scrollView.showsVerticalScrollIndicator = false
@@ -221,7 +219,6 @@ class BuildViewController: UIViewController, AddressDelegate {
         
         createStartButton()
         medMotorView = createMedMotor()
-        //displayView = createDisplay()
         soundView = createSound()
         waitView = createWait()
         startLoopView = createStartLoop()
@@ -332,7 +329,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         
         let name = UILabel()
         name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
-        name.text = "Medium Motor"
+        name.text = "Motor"
         name.textColor = PrimaryOrange
         
         var panGesture = UIPanGestureRecognizer()
@@ -356,51 +353,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         return tempView
     }
     
-    func createDisplay()->UIView{
-        let tempView = UIView()
-        tempView.backgroundColor = UIColor.clear
-        tempView.layer.borderColor = PrimaryOrange.cgColor
-        tempView.layer.borderWidth = 1.2
-        tempView.layer.cornerRadius = 5
-        tempView.layer.masksToBounds = true
-        tempView.frame = CGRect(x: 500, y: 525, width: 120, height: 160)
-        
-        var clearScreenButton = UIButton();
-        clearScreenButton = createButton(title: "clear", _x: 0, _y: 80, _width: 35, _height: 40)
-        
-        var xButton = UIButton();
-        xButton = createButton(title: "x", _x: 40, _y: 80, _width: 35, _height: 40)
-        
-        var yButton = UIButton();
-        yButton = createButton(title: "y", _x: 80, _y: 80, _width: 35, _height: 40)
-        
-        var deleteButton = UIButton();
-        deleteButton = createButton(title: "X", _x: 80, _y: 0, _width: 20, _height: 30)
-        
-        let name = UILabel()
-        name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
-        name.text = "Display"
-        name.textColor = PrimaryOrange
-        
-        var panGesture = UIPanGestureRecognizer()
-        panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewD(_:)))
-        tempView.isUserInteractionEnabled = true
-        tempView.addGestureRecognizer(panGesture)
-        
-        clearScreenButton.addTarget(self, action: #selector(clearAlertDisplay(sender:event:)), for: UIControlEvents.touchUpInside)
-        xButton.addTarget(self, action: #selector(xAlertDisplay(sender:event:)), for: UIControlEvents.touchUpInside)
-        yButton.addTarget(self, action: #selector(yAlertDisplay(sender:event:)), for: UIControlEvents.touchUpInside)
-        deleteButton.addTarget(self, action: #selector(deleteBlock(sender:event:)), for: UIControlEvents.touchUpInside)
-        tempView.addSubview(name)
-        tempView.addSubview(clearScreenButton)
-        tempView.addSubview(xButton)
-        tempView.addSubview(yButton)
-        tempView.addSubview(deleteButton)
-        self.view.addSubview(tempView)
-        
-        return tempView
-    }
-    
+  
     func createSound()->UIView{
         let tempView = UIView()
         tempView.backgroundColor = UIColor.clear
@@ -613,9 +566,6 @@ class BuildViewController: UIViewController, AddressDelegate {
         if(type == "medMotorView"){
             medMotorView = createMedMotor()
             return medMotorView
-        }else if(type == "displayView"){
-            displayView = createDisplay()
-            return displayView
         }else if(type == "soundView"){
             soundView = createSound()
             return soundView
@@ -660,7 +610,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         medMotorView.center = CGPoint(x: medMotorView.center.x + translation.x, y: medMotorView.center.y + translation.y)
         sender.setTranslation(CGPoint.zero, in: self.view)
         
-        let xLoc = medMotorView.center.x + translation.x
+        let xLoc = medMotorView.center.x + translation.x + scrollView.contentOffset.x
         let yLoc = medMotorView.center.y + translation.y
         
         var index = Int()
@@ -672,19 +622,6 @@ class BuildViewController: UIViewController, AddressDelegate {
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
                 toAppend = true
-            }
-                //if dragged to middle
-            else if(xLoc > startPoint.x && xLoc < nextPoint.x){
-                var beginXRange = startPoint.x
-                var endXRange = startPoint.x + 128
-                for i in  0..<viewSequence.count {
-                    if(xLoc < endXRange && xLoc > beginXRange){
-                        index = i
-                    }else{
-                        beginXRange += 128
-                        endXRange += 128
-                    }
-                }
             }
         }
         if(sender.state == UIGestureRecognizerState.ended){
@@ -714,6 +651,18 @@ class BuildViewController: UIViewController, AddressDelegate {
                 scrollView.addSubview(medMotorView)
                 viewSequence.append(medMotorView)
             }else{
+                
+                if (viewSequence.count > 0){
+                    for i in 0..<(viewSequence.count - 1){
+                        var leftStart = viewSequence[i].frame.origin.x
+                        var rightEnd = viewSequence[i+1].frame.origin.x + 128
+                        //If sandwiched between these two blocks, then take the position of the second block
+                        if (xLoc > leftStart && xLoc < rightEnd){
+                            index = i + 1
+                        }
+                    }
+                }
+                
                 medMotorView.removeFromSuperview()
                 objectSequence.insert(newMM, at: index)
                 scrollView.addSubview(medMotorView)
@@ -724,64 +673,7 @@ class BuildViewController: UIViewController, AddressDelegate {
             medMotorView = replaceView(type: "medMotorView")
         }
     }
-    
-    func draggedViewD(_ sender:UIPanGestureRecognizer){
-        let labels = getLabelsInView(view: medMotorView)
-        if(labels.count != 8){
-            invalidInputAlert(_title: "Invalid input for Display", msg: "Please enter inputs for speed, rotations and brake")
-            return
-        }
-        
-        let translation = sender.translation(in: self.view)
-        displayView.center = CGPoint(x: displayView.center.x + translation.x, y: displayView.center.y + translation.y)
-        sender.setTranslation(CGPoint.zero, in: self.view)
-        
-        let xLoc = displayView.center.x + translation.x
-        let yLoc = displayView.center.y + translation.y
-        
-        var index = Int()
-        index = viewSequence.count
-        var toAppend = Bool()
-        toAppend = false
-        
-        if(yLoc > 200 && yLoc < 400){
-            //if dragged to end
-            if(xLoc > (nextPoint.x + 128)){
-                displayView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
-                nextPoint.x = nextPoint.x + 128
-                toAppend = true
-            }
-                //if dragged to middle
-            else if(xLoc > startPoint.x && xLoc < nextPoint.x){
-                var beginXRange = startPoint.x
-                var endXRange = startPoint.x + 128
-                for i in  0..<viewSequence.count {
-                    if(xLoc < endXRange && xLoc > beginXRange){
-                        index = i
-                    }else{
-                        beginXRange += 128
-                        endXRange += 128
-                    }
-                }
-            }
-        }
-        if(sender.state == UIGestureRecognizerState.ended){
-            let newD = DisplayObject(ty: "display");
-            newD.setX(x: 10)
-            newD.setY(y: 10)
-            newD.setClear(newClear: true)
-            if(toAppend){
-                objectSequence.append(newD);
-                viewSequence.append(displayView)
-            }else{
-                objectSequence.insert(newD, at: index)
-                viewSequence.insert(displayView, at: index)
-            }
-            updateUIViewOrder()
-            displayView = replaceView(type: "displayView")
-        }
-    }
-    
+
     func draggedViewS(_ sender:UIPanGestureRecognizer){
         let labels = getLabelsInView(view: soundView)
         if(labels.count != 8){
@@ -793,7 +685,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         soundView.center = CGPoint(x: soundView.center.x + translation.x, y: soundView.center.y + translation.y)
         sender.setTranslation(CGPoint.zero, in: self.view)
         
-        let xLoc = soundView.center.x + translation.x
+        let xLoc = soundView.center.x + translation.x + scrollView.contentOffset.x
         let yLoc = soundView.center.y + translation.y
         
         var index = Int()
@@ -805,19 +697,6 @@ class BuildViewController: UIViewController, AddressDelegate {
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
                 toAppend = true
-            }
-                //if dragged to middle
-            else if(xLoc > startPoint.x && xLoc < nextPoint.x){
-                var beginXRange = startPoint.x
-                var endXRange = startPoint.x + 128
-                for i in  0..<viewSequence.count {
-                    if(xLoc < endXRange && xLoc > beginXRange){
-                        index = i
-                    }else{
-                        beginXRange += 128
-                        endXRange += 128
-                    }
-                }
             }
         }
         if(sender.state == UIGestureRecognizerState.ended){
@@ -842,6 +721,18 @@ class BuildViewController: UIViewController, AddressDelegate {
                 objectSequence.append(newS);
                 viewSequence.append(soundView)
             }else{
+                
+                if (viewSequence.count > 0){
+                    for i in 0..<(viewSequence.count - 1){
+                        var leftStart = viewSequence[i].frame.origin.x
+                        var rightEnd = viewSequence[i+1].frame.origin.x + 128
+                        //If sandwiched between these two blocks, then take the position of the second block
+                        if (xLoc > leftStart && xLoc < rightEnd){
+                            index = i + 1
+                        }
+                    }
+                }
+                
                 soundView.removeFromSuperview()
                 scrollView.addSubview(soundView)
                 objectSequence.insert(newS, at: index)
@@ -863,7 +754,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         waitView.center = CGPoint(x: waitView.center.x + translation.x, y: waitView.center.y + translation.y)
         sender.setTranslation(CGPoint.zero, in: self.view)
         
-        let xLoc = waitView.center.x + translation.x
+        let xLoc = waitView.center.x + translation.x + scrollView.contentOffset.x
         let yLoc = waitView.center.y + translation.y
         
         var index = Int()
@@ -875,20 +766,6 @@ class BuildViewController: UIViewController, AddressDelegate {
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
                 toAppend = true
-            }
-                //if dragged to middle
-            else if(xLoc > startPoint.x && xLoc < nextPoint.x){
-                var beginXRange = startPoint.x
-                var endXRange = startPoint.x + 128
-                for i in  0..<viewSequence.count {
-                    if(xLoc < endXRange && xLoc > beginXRange){
-                        index = i
-                        break
-                    }else{
-                        beginXRange += 128
-                        endXRange += 128
-                    }
-                }
             }
         }
         if(sender.state == UIGestureRecognizerState.ended){
@@ -912,6 +789,18 @@ class BuildViewController: UIViewController, AddressDelegate {
                 objectSequence.append(newW);
                 viewSequence.append(waitView)
             }else{
+                
+                if (viewSequence.count > 0){
+                    for i in 0..<(viewSequence.count - 1){
+                        var leftStart = viewSequence[i].frame.origin.x
+                        var rightEnd = viewSequence[i+1].frame.origin.x + 128
+                        //If sandwiched between these two blocks, then take the position of the second block
+                        if (xLoc > leftStart && xLoc < rightEnd){
+                            index = i + 1
+                        }
+                    }
+                }
+                
                 waitView.removeFromSuperview()
                 scrollView.addSubview(waitView)
                 objectSequence.insert(newW, at: index)
@@ -928,7 +817,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         startLoopView.center = CGPoint(x: startLoopView.center.x + translation.x, y: startLoopView.center.y + translation.y)
         sender.setTranslation(CGPoint.zero, in: self.view)
         
-        let xLoc = startLoopView.center.x + translation.x
+        let xLoc = startLoopView.center.x + translation.x + scrollView.contentOffset.x
         let yLoc = startLoopView.center.y + translation.y
         
         var index = Int()
@@ -940,20 +829,6 @@ class BuildViewController: UIViewController, AddressDelegate {
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
                 toAppend = true
-            }
-                //if dragged to middle
-            else if(xLoc > startPoint.x && xLoc < nextPoint.x){
-                var beginXRange = startPoint.x
-                var endXRange = startPoint.x + 128
-                for i in  0..<viewSequence.count {
-                    if(xLoc < endXRange && xLoc > beginXRange){
-                        index = i
-                        break
-                    }else{
-                        beginXRange += 128
-                        endXRange += 128
-                    }
-                }
             }
         }
         if(sender.state == UIGestureRecognizerState.ended){
@@ -978,6 +853,18 @@ class BuildViewController: UIViewController, AddressDelegate {
                 self.scrollView.addSubview(startLoopView)
                 viewSequence.append(startLoopView)
             }else{
+                
+                if (viewSequence.count > 0){
+                    for i in 0..<(viewSequence.count - 1){
+                        var leftStart = viewSequence[i].frame.origin.x
+                        var rightEnd = viewSequence[i+1].frame.origin.x + 128
+                        //If sandwiched between these two blocks, then take the position of the second block
+                        if (xLoc > leftStart && xLoc < rightEnd){
+                            index = i + 1
+                        }
+                    }
+                }
+                
                 objectSequence.insert(newSL, at: index)
                 startLoopView.removeFromSuperview()
                 self.scrollView.addSubview(startLoopView)
@@ -995,34 +882,24 @@ class BuildViewController: UIViewController, AddressDelegate {
         endLoopView.center = CGPoint(x: endLoopView.center.x + translation.x, y: endLoopView.center.y + translation.y)
         sender.setTranslation(CGPoint.zero, in: self.view)
         
-        let xLoc = endLoopView.center.x + translation.x
+        
+        let xLoc = endLoopView.center.x + translation.x + scrollView.contentOffset.x
         let yLoc = endLoopView.center.y + translation.y
         var index = Int()
         index = viewSequence.count
         var toAppend = Bool()
         toAppend = false
-        if(yLoc > 200 && yLoc < 400){
+        
+        //if it's within the bounds of the scroll view
+        if(self.scrollView.frame.contains(CGPoint(x: xLoc, y: yLoc))){
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
                 toAppend = true
             }
-                //if dragged to middle
-            else if(xLoc > startPoint.x && xLoc < nextPoint.x){
-                var beginXRange = startPoint.x
-                var endXRange = startPoint.x + 128
-                for i in  0..<viewSequence.count {
-                    if(xLoc < endXRange && xLoc > beginXRange){
-                        index = i
-                        break
-                    }else{
-                        beginXRange += 128
-                        endXRange += 128
-                    }
-                }
-            }
         }
         
         if(sender.state == UIGestureRecognizerState.ended){
+            
             let newEL = EndLoopObject(ty: "endLoop");
             var oldPanGesture = UIPanGestureRecognizer()
             oldPanGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewEL(_:)))
@@ -1038,6 +915,18 @@ class BuildViewController: UIViewController, AddressDelegate {
                 scrollView.addSubview(endLoopView)
                 viewSequence.append(endLoopView)
             }else{
+                
+                if (viewSequence.count > 0){
+                    for i in 0..<(viewSequence.count - 1){
+                        var leftStart = viewSequence[i].frame.origin.x
+                        var rightEnd = viewSequence[i+1].frame.origin.x + 128
+                        //If sandwiched between these two blocks, then take the position of the second block
+                        if (xLoc > leftStart && xLoc < rightEnd){
+                            index = i + 1
+                        }
+                    }
+                }
+                
                 objectSequence.insert(newEL, at: index)
                 endLoopView.removeFromSuperview()
                 scrollView.addSubview(endLoopView)
@@ -1060,7 +949,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         steerView.center = CGPoint(x: steerView.center.x + translation.x, y: steerView.center.y + translation.y)
         sender.setTranslation(CGPoint.zero, in: self.view)
         
-        let xLoc = steerView.center.x + translation.x
+        let xLoc = steerView.center.x + translation.x + scrollView.contentOffset.x
         let yLoc = steerView.center.y + translation.y
         
         var index = Int()
@@ -1072,19 +961,6 @@ class BuildViewController: UIViewController, AddressDelegate {
             //if dragged to end
             if(xLoc > (nextPoint.x + 128)){
                 toAppend = true
-            }
-                //if dragged to middle
-            else if(xLoc > startPoint.x && xLoc < nextPoint.x){
-                var beginXRange = startPoint.x
-                var endXRange = startPoint.x + 128
-                for i in  0..<viewSequence.count {
-                    if(xLoc < endXRange && xLoc > beginXRange){
-                        index = i
-                    }else{
-                        beginXRange += 128
-                        endXRange += 128
-                    }
-                }
             }
         }
         if(sender.state == UIGestureRecognizerState.ended){
@@ -1115,6 +991,18 @@ class BuildViewController: UIViewController, AddressDelegate {
                 objectSequence.append(newS);
                 viewSequence.append(steerView)
             }else{
+                
+                if (viewSequence.count > 0){
+                    for i in 0..<(viewSequence.count - 1){
+                        var leftStart = viewSequence[i].frame.origin.x
+                        var rightEnd = viewSequence[i+1].frame.origin.x + 128
+                        //If sandwiched between these two blocks, then take the position of the second block
+                        if (xLoc > leftStart && xLoc < rightEnd){
+                            index = i + 1
+                        }
+                    }
+                }
+                
                 steerView.removeFromSuperview()
                 scrollView.addSubview(steerView)
                 objectSequence.insert(newS, at: index)
@@ -1915,7 +1803,6 @@ class BuildViewController: UIViewController, AddressDelegate {
     }
     
     func deleteBlock(sender: Any, event: UIEvent){
-        print("in delete block")
         let myButton:UIButton = sender as! UIButton
         let touches: Set<UITouch>? = event.touches(for: myButton)
         let touch: UITouch? = touches?.first
