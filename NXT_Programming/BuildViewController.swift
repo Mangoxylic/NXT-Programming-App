@@ -493,7 +493,7 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
 
         let volumeLabel = UILabel()
         volumeLabel.frame = CGRect(x: 70, y: 75, width: 60, height: 15)
-        volumeLabel.text = "50"
+        volumeLabel.text = "500"
         
         let durationSlider = UISlider(frame: CGRect(x: 5, y: 100, width: 110, height: 25))
         durationSlider.maximumValue = 10
@@ -1789,7 +1789,7 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
                 }
             }else if(objectSequence[i].type == "sound"){
                 let soundObj = objectSequence[i] as! SoundObject
-                let json: JSON = ["type": "playsound", "freq": soundObj.getVolume(), "duration": soundObj.duration]
+                let json: JSON = ["type": "playsound", "freq": soundObj.getVolume(), "duration": soundObj.duration * 1000]
                 if (loopOpened){
                     loopCommands.append(json)
                 } else {
