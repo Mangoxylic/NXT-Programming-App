@@ -41,6 +41,7 @@ class MotorObject : BrickObject {
     func getRotations()->Int{ return rotations }
     func getBrake()->Bool{ return brake }
 }
+
 class DisplayObject : BrickObject{
     var clear: Bool = true
     var xLoc: Int = 0
@@ -139,6 +140,10 @@ class BuildViewController: UIViewController, AddressDelegate {
     @IBOutlet weak var idLabel: UILabel!
     
     let PrimaryOrange = UIColor(red:0.95, green:0.40, blue:0.19, alpha:1.0)
+    let PrimaryRed = UIColor(red:0.84, green:0.20, blue:0.19, alpha:1.0)
+    let PrimaryBlue = UIColor(red:0.22, green:0.53, blue:0.59, alpha:1.0)
+    let PrimaryBlack = UIColor(red:0.21, green:0.21, blue:0.19, alpha:1.0)
+    let PrimaryGold = UIColor(red:0.98, green:0.74, blue:0.24, alpha:1.0)
     
     var scrollView: UIScrollView! = nil
     let startButton = UIButton()
@@ -438,8 +443,8 @@ class BuildViewController: UIViewController, AddressDelegate {
     
     func createWait()->UIView{
         let tempView = UIView()
-        tempView.backgroundColor = UIColor.clear
-        tempView.layer.borderColor = PrimaryOrange.cgColor
+        tempView.backgroundColor = PrimaryGold
+        tempView.layer.borderColor = PrimaryGold.cgColor
         tempView.layer.borderWidth = 1.2
         tempView.layer.cornerRadius = 5
         tempView.layer.masksToBounds = true
@@ -452,9 +457,9 @@ class BuildViewController: UIViewController, AddressDelegate {
         deleteButton = createButton(title: "X", _x: 80, _y: 0, _width: 20, _height: 30)
         
         let name = UILabel()
-        name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
+        name.frame = CGRect(x: 40, y: 25, width: 120, height: 40)
         name.text = "Wait"
-        name.textColor = PrimaryOrange
+        name.textColor = UIColor.white
         
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewW(_:)))
@@ -474,8 +479,8 @@ class BuildViewController: UIViewController, AddressDelegate {
     
     func createStartLoop()->UIView{
         let tempView = UIView()
-        tempView.backgroundColor = UIColor.clear
-        tempView.layer.borderColor = PrimaryOrange.cgColor
+        tempView.backgroundColor = PrimaryBlue
+        tempView.layer.borderColor = PrimaryBlue.cgColor
         tempView.layer.borderWidth = 1.2
         tempView.layer.cornerRadius = 5
         tempView.layer.masksToBounds = true
@@ -488,9 +493,9 @@ class BuildViewController: UIViewController, AddressDelegate {
         timeButton = createButton(title: "time", _x: 40, _y: 80, _width: 35, _height: 40)
         
         let name = UILabel()
-        name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
+        name.frame = CGRect(x: 20, y: 25, width: 120, height: 40)
         name.text = "Start Loop"
-        name.textColor = PrimaryOrange
+        name.textColor = UIColor.white
         
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewSL(_:)))
@@ -515,8 +520,8 @@ class BuildViewController: UIViewController, AddressDelegate {
     
     func createEndLoop()->UIView{
         let tempView = UIView()
-        tempView.backgroundColor = UIColor.clear
-        tempView.layer.borderColor = PrimaryOrange.cgColor
+        tempView.backgroundColor = PrimaryRed
+        tempView.layer.borderColor = PrimaryRed.cgColor
         tempView.layer.borderWidth = 1.2
         tempView.layer.cornerRadius = 5
         tempView.layer.masksToBounds = true
@@ -528,9 +533,9 @@ class BuildViewController: UIViewController, AddressDelegate {
         tempView.addGestureRecognizer(panGesture)
         
         let name = UILabel()
-        name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
+        name.frame = CGRect(x: 20, y: 65, width: 120, height: 40)
         name.text = "End Loop"
-        name.textColor = PrimaryOrange
+        name.textColor = UIColor.white
         
         var deleteButton = UIButton();
         deleteButton = createButton(title: "X", _x: 80, _y: 0, _width: 20, _height: 30)
@@ -551,7 +556,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         tempView.layer.cornerRadius = 5
         tempView.layer.masksToBounds = true
         tempView.frame = CGRect(x: 160, y: 525, width: 120, height: 160)
-        
+
         var brakeButton = UIButton()
         brakeButton = createButton(title: "brake", _x: 0, _y: 50, _width: 35, _height: 40);
         
@@ -1045,7 +1050,11 @@ class BuildViewController: UIViewController, AddressDelegate {
     }
     
     func draggedViewSteer(_ sender:UIPanGestureRecognizer){
-        
+        let labels = getLabelsInView(view: medMotorView)
+        if(labels.count != 14){
+            invalidInputAlert(_title: "Invalid input for Motor", msg: "Please enter inputs for speed, rotations and brake")
+            return
+        }
         let translation = sender.translation(in: self.view)
         
         steerView.center = CGPoint(x: steerView.center.x + translation.x, y: steerView.center.y + translation.y)
@@ -1081,12 +1090,12 @@ class BuildViewController: UIViewController, AddressDelegate {
         if(sender.state == UIGestureRecognizerState.ended){
             let labels = getLabelsInView(view: steerView)
             //TODO: Fix label numbers
-            let brake = labels[10].text!
-            let power = labels[11].text!
-            let revolutions = labels[12].text!
-            let leadport = labels[13].text!
-            let followport = labels[14].text!
-            let turnratio = labels[15].text!
+            let brake = labels[8].text!
+            let power = labels[9].text!
+            let revolutions = labels[10].text!
+            let leadport = labels[11].text!
+            let followport = labels[12].text!
+            let turnratio = labels[13].text!
             let brakeBool = brake.lowercased() == "true"
             
             let newS = SteerObject(ty: "steer");
@@ -1903,7 +1912,6 @@ class BuildViewController: UIViewController, AddressDelegate {
         waitView.isHidden = show;
         startLoopView.isHidden = show;
         endLoopView.isHidden = show;
-        
     }
     
     func deleteBlock(sender: Any, event: UIEvent){
