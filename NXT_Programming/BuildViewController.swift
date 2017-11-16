@@ -544,7 +544,7 @@ class BuildViewController: UIViewController, AddressDelegate {
     func createSteer()->UIView{
         let tempView = UIView()
         tempView.backgroundColor = UIColor.yellow
-        tempView.frame = CGRect(x: 25, y: 650, width: 120, height: 160)
+        tempView.frame = CGRect(x: 200, y: 650, width: 120, height: 160)
         
         var brakeButton = UIButton()
         brakeButton = createButton(title: "brake", _x: 0, _y: 50, _width: 35, _height: 40);
@@ -1884,13 +1884,13 @@ class BuildViewController: UIViewController, AddressDelegate {
         largeMotorView.isHidden = show;
         displayView.isHidden = show;
         soundView.isHidden = show;
+        steerView.isHidden = show;
     }
     
     func showViewsTabTwo(show: Bool){
         waitView.isHidden = show;
         startLoopView.isHidden = show;
         endLoopView.isHidden = show;
-        steerView.isHidden = show;
     }
     
     func deleteBlock(sender: Any, event: UIEvent){
