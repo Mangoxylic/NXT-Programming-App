@@ -28,6 +28,26 @@ class ProgramManager: NSObject {
         return self.program
     }
     
+    class func getID(programName: String) -> String {
+        /*
+        self.isNewProgram = false
+        self.programName = field.text!
+        self.realmID = ProgramManager.getID(programName: self.programName)
+        */
+        
+        let realm = try! Realm()
+        
+        // Programs with name of programName
+        let programs = realm.objects(Program.self).filter("name = %@", programName)
+        let program = programs.first
+        
+        if program != nil {
+            return (program?.id)!
+        }
+        
+        return ""
+    }
+    
     class func convertDictionaryToArrayWith(dictionary: NSMutableDictionary) -> Array<ProgramManager> {
         var resultArray: Array<ProgramManager> = []
         for (key, value) in dictionary {
