@@ -193,12 +193,6 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     let brakeMM = UILabel()
     let loops = UILabel()
     let time = UILabel()
-    let brakeS = UILabel()
-    let powerS = UILabel()
-    let revolutions = UILabel()
-    let leadport = UILabel()
-    let followport = UILabel()
-    let turnratio = UILabel()
     var objectSequence = [BrickObject]()
     
     var testButton = UIButton()
@@ -387,7 +381,7 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     
     func createMedMotor()->UIView{
         let tempView = UIView()
-        tempView.backgroundColor = UIColor.clear
+        tempView.backgroundColor = UIColor.white
         tempView.layer.borderColor = PrimaryOrange.cgColor
         tempView.layer.borderWidth = 1.2
         tempView.layer.cornerRadius = 5
@@ -479,7 +473,7 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
 
     func createSound()->UIView{
         let tempView = UIView()
-        tempView.backgroundColor = UIColor.clear
+        tempView.backgroundColor = UIColor.white
         tempView.layer.borderColor = PrimaryOrange.cgColor
         tempView.layer.borderWidth = 1.2
         tempView.layer.cornerRadius = 5
@@ -679,33 +673,51 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     
     func createSteer()->UIView{
         let tempView = UIView()
-        tempView.backgroundColor = UIColor.clear
+        tempView.backgroundColor = UIColor.white
         tempView.layer.borderColor = PrimaryOrange.cgColor
         tempView.layer.borderWidth = 1.2
         tempView.layer.cornerRadius = 5
         tempView.layer.masksToBounds = true
         tempView.frame = CGRect(x: 160, y: 525, width: 120, height: 160)
-
+        
+        let brakeLbl = UILabel(frame: CGRect(x: 2, y: 35, width: 40, height: 15))
+        brakeLbl.text = "true"
+        brakeLbl.textColor = UIColor.black
         var brakeButton = UIButton()
         brakeButton = createButton(title: "", _x: 0, _y: 50, _width: 35, _height: 40);
         brakeButton.setImage(UIImage(named:"brake"), for: UIControlState.normal)
         
+        let powerLbl = UILabel(frame: CGRect(x: 45, y: 35, width: 30, height: 15))
+        powerLbl.text = "100"
+        powerLbl.textColor = UIColor.black
         var powerButton = UIButton();
         powerButton = createButton(title: "", _x: 40, _y: 50, _width: 35, _height: 40)
         powerButton.setImage(UIImage(named:"power"), for: UIControlState.normal)
         
+        let revLbl = UILabel(frame: CGRect(x: 90, y: 35, width: 30, height: 15))
+        revLbl.text = "3"
+        revLbl.textColor = UIColor.black
         var revolutionsButton = UIButton();
         revolutionsButton = createButton(title: "", _x: 80, _y: 50, _width: 35, _height: 40)
         revolutionsButton.setImage(UIImage(named:"revolution"), for: UIControlState.normal)
         
+        let leadLbl = UILabel(frame: CGRect(x: 5, y: 95, width: 20, height: 15))
+        leadLbl.text = "B"
+        leadLbl.textColor = UIColor.black
         var leadportButton = UIButton();
         leadportButton = createButton(title: "", _x: 0, _y: 110, _width: 35, _height: 40)
         leadportButton.setImage(UIImage(named:"lead"), for: UIControlState.normal)
         
+        let followLbl = UILabel(frame: CGRect(x: 45, y: 95, width: 20, height: 15))
+        followLbl.text = "C"
+        followLbl.textColor = UIColor.black
         var followportButton = UIButton();
         followportButton = createButton(title: "follow port", _x: 40, _y: 110, _width: 35, _height: 40)
         followportButton.setImage(UIImage(named:"follow"), for: UIControlState.normal)
         
+        let ratLbl = UILabel(frame: CGRect(x: 85, y: 95, width: 40, height: 15))
+        ratLbl.text = "100"
+        ratLbl.textColor = UIColor.black
         var turnratioButton = UIButton();
         turnratioButton = createButton(title: "", _x: 80, _y: 110, _width: 35, _height: 40)
         turnratioButton.setImage(UIImage(named:"ratio"), for: UIControlState.normal)
@@ -732,12 +744,19 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         turnratioButton.addTarget(self, action: #selector(turnRatioAlert(sender:event:)), for: UIControlEvents.touchUpInside)
         deleteButton.addTarget(self, action: #selector(deleteBlock(sender:event:)), for: UIControlEvents.touchUpInside)
         
+        
         tempView.addSubview(name)
+        tempView.addSubview(brakeLbl)
         tempView.addSubview(brakeButton)
+        tempView.addSubview(powerLbl)
         tempView.addSubview(powerButton)
+        tempView.addSubview(revLbl)
         tempView.addSubview(revolutionsButton)
+        tempView.addSubview(leadLbl)
         tempView.addSubview(leadportButton)
+        tempView.addSubview(followLbl)
         tempView.addSubview(followportButton)
+        tempView.addSubview(ratLbl)
         tempView.addSubview(turnratioButton)
         tempView.addSubview(deleteButton)
         self.view.addSubview(tempView)
@@ -1196,11 +1215,11 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         if(sender.state == UIGestureRecognizerState.ended){
             let labels = getLabelsInView(view: steerView)
             //TODO: Fix label numbers
-            let brake = labels[2].text!
-            let power = labels[3].text!
-            let revolutions = labels[4].text!
-            let leadport = labels[5].text!
-            let followport = labels[6].text!
+            let brake = labels[1].text!
+            let power = labels[2].text!
+            let revolutions = labels[3].text!
+            let leadport = labels[4].text!
+            let followport = labels[5].text!
             let turnratio = labels[7].text!
             let brakeBool = brake.lowercased() == "true"
             
@@ -1588,10 +1607,11 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             print("ans")
             print(ans)
             
-            self.brakeS.frame = CGRect(x: 0, y: 25, width: 35, height: 30)
-            self.brakeS.text = ans
-            
-            self.steerView.addSubview(self.brakeS)
+            let labels = self.getLabelsInView(view: self.steerView)
+            if (labels.count == 8){
+                let timeLbl = labels[1]
+                timeLbl.text = ans
+            }
             
         }))
         
@@ -1616,10 +1636,11 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             print("ans")
             print(ans)
             
-            self.powerS.frame = CGRect(x: 40, y: 25, width: 35, height: 30)
-            self.powerS.text = ans
-            
-            self.steerView.addSubview(self.powerS)
+            let labels = self.getLabelsInView(view: self.steerView)
+            if (labels.count == 8){
+                let timeLbl = labels[2]
+                timeLbl.text = ans
+            }
             
         }))
         
@@ -1644,10 +1665,11 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             print("ans")
             print(ans)
             
-            self.revolutions.frame = CGRect(x: 80, y: 25, width: 35, height: 30)
-            self.revolutions.text = ans
-            
-            self.steerView.addSubview(self.revolutions)
+            let labels = self.getLabelsInView(view: self.steerView)
+            if (labels.count == 8){
+                let timeLbl = labels[3]
+                timeLbl.text = ans
+            }
             
         }))
         
@@ -1672,10 +1694,11 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             print("ans")
             print(ans)
             
-            self.leadport.frame = CGRect(x: 0, y: 85, width: 35, height: 30)
-            self.leadport.text = ans
-            
-            self.steerView.addSubview(self.leadport)
+            let labels = self.getLabelsInView(view: self.steerView)
+            if (labels.count == 8){
+                let timeLbl = labels[4]
+                timeLbl.text = ans
+            }
             
         }))
         
@@ -1700,10 +1723,11 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             print("ans")
             print(ans)
             
-            self.followport.frame = CGRect(x: 40, y: 85, width: 35, height: 30)
-            self.followport.text = ans
-            
-            self.steerView.addSubview(self.followport)
+            let labels = self.getLabelsInView(view: self.steerView)
+            if (labels.count == 8){
+                let timeLbl = labels[5]
+                timeLbl.text = ans
+            }
             
         }))
         
@@ -1728,10 +1752,11 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             print("ans")
             print(ans)
             
-            self.turnratio.frame = CGRect(x: 80, y: 85, width: 35, height: 30)
-            self.turnratio.text = ans
-            
-            self.steerView.addSubview(self.turnratio)
+            let labels = self.getLabelsInView(view: self.steerView)
+            if (labels.count == 8){
+                let timeLbl = labels[7]
+                timeLbl.text = ans
+            }
             
         }))
         
