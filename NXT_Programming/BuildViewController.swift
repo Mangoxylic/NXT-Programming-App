@@ -141,7 +141,7 @@ class SteerObject : BrickObject {
     func setTurnRatio(newTurnRatio: Int){ turnratio = newTurnRatio }
 }
 
-class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
+class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelegate, UIPickerViewDataSource, UIGestureRecognizerDelegate {
     
     
     
@@ -278,6 +278,12 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         return true
     }
     
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        if (touch != nil && touch.view!.isKind(of: UISlider)){
+            return false
+        }
+        return true
+    }
     /*
      PICKER VIEW STUFF
  
@@ -452,16 +458,17 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     //Update the frequency here
     func frequencyChange(_ sender: UISlider){
         let labels = self.getLabelsInView(view: self.soundView)
-        if labels.count > 5 {
-            labels[5].text = "\(Int(sender.value))"
+        print("End")
+        if labels.count == 5 {
+            labels[3].text = "\(Int(sender.value))"
         }
     }
     
     //Update the frequency here
     func durationChange(_ sender: UISlider){
         let labels = self.getLabelsInView(view: self.soundView)
-        if labels.count > 7 {
-            labels[7].text = "\(Int(sender.value))"
+        if labels.count == 5 {
+            labels[4].text = "\(Int(sender.value))"
         }
     }
 
@@ -472,42 +479,42 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.layer.borderWidth = 1.2
         tempView.layer.cornerRadius = 5
         tempView.layer.masksToBounds = true
-        tempView.frame = CGRect(x: 295, y: 515, width: 120, height: 180)
+        tempView.frame = CGRect(x: 295, y: 525, width: 120, height: 160)
         
-        var volumeSlider = UISlider(frame: CGRect(x: 5, y: 40, width: 110, height: 10))
+        let volumeSlider = UISlider(frame: CGRect(x: 5, y: 45, width: 110, height: 25))
         volumeSlider.maximumValue = 1000
         volumeSlider.minimumValue = 0
         volumeSlider.value = 500
         volumeSlider.addTarget(self, action: #selector(self.frequencyChange), for: .valueChanged)
         
         let volumeTitle  = UILabel()
-        volumeTitle.frame = CGRect(x: 10, y: 55, width: 60, height: 40)
+        volumeTitle.frame = CGRect(x: 10, y: 75, width: 60, height: 15)
         volumeTitle.text = "Pitch:"
 
         let volumeLabel = UILabel()
-        volumeLabel.frame = CGRect(x: 70, y: 55, width: 60, height: 40)
+        volumeLabel.frame = CGRect(x: 70, y: 75, width: 60, height: 15)
         volumeLabel.text = "50"
         
-        var durationSlider = UISlider(frame: CGRect(x: 5, y: 85, width: 110, height: 10))
+        let durationSlider = UISlider(frame: CGRect(x: 5, y: 100, width: 110, height: 25))
         durationSlider.maximumValue = 10
-        durationSlider.minimumValue = 0
+        durationSlider.minimumValue = 1
         durationSlider.value = 5
         durationSlider.addTarget(self, action: #selector(self.durationChange(_:)), for: .valueChanged)
-        
+    
         let durationTitle  = UILabel()
-        durationTitle.frame = CGRect(x: 10, y: 100, width: 120, height: 40)
-        durationTitle.text = "Duration:"
+        durationTitle.frame = CGRect(x: 10, y: 130, width: 60, height: 15)
+        durationTitle.text = "Time:"
         let durationLabel = UILabel()
-        durationLabel.frame = CGRect(x: 10, y: 115, width: 120, height: 40)
-        durationLabel.text = "45"
-        
-        var playTypeButton = UIButton();
-        playTypeButton = createButton(title: "type", _x: 40, _y: 140, _width: 35, _height: 40)
-        playTypeButton.setImage(UIImage(named:"play"), for: UIControlState.normal)
+        durationLabel.frame = CGRect(x: 70, y: 130, width: 60, height: 15)
+        durationLabel.text = "5"
         
         var deleteButton = UIButton();
         deleteButton = createButton(title: "", _x: 95, _y: 0, _width: 20, _height: 30)
         deleteButton.setImage(UIImage(named:"trash"), for: UIControlState.normal)
+        
+        var playTypeButton = UIButton();
+        playTypeButton = createButton(title: "type", _x: 40, _y: 140, _width: 35, _height: 40)
+        playTypeButton.setImage(UIImage(named:"play"), for: UIControlState.normal)
         
         let playTypeLabel = UILabel()
         playTypeLabel.frame = CGRect(x: 30, y: 150, width: 120, height: 40)
@@ -520,6 +527,7 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewS(_:)))
+        panGesture.delegate = self
         tempView.isUserInteractionEnabled = true
         tempView.addGestureRecognizer(panGesture)
         
@@ -528,12 +536,12 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.addSubview(name)
         tempView.addSubview(volumeSlider)
         tempView.addSubview(volumeTitle)
-        tempView.addSubview(playTypeButton)
+        //tempView.addSubview(playTypeButton)
         tempView.addSubview(deleteButton)
         tempView.addSubview(durationSlider)
         tempView.addSubview(durationTitle)
         tempView.addSubview(volumeLabel)
-        tempView.addSubview(playTypeLabel)
+        //tempView.addSubview(playTypeLabel)
         tempView.addSubview(durationLabel)
         self.view.addSubview(tempView)
         
@@ -888,6 +896,8 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     }
     
     func draggedViewS(_ sender:UIPanGestureRecognizer){
+        let labels = getLabelsInView(view: soundView)
+
         let translation = sender.translation(in: self.view)
         soundView.center = CGPoint(x: soundView.center.x + translation.x, y: soundView.center.y + translation.y)
         sender.setTranslation(CGPoint.zero, in: self.view)
@@ -907,9 +917,9 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             }
         }
         if(sender.state == UIGestureRecognizerState.ended){
-            let labels = getLabelsInView(view: soundView)
-            let freq = labels[5].text!
-            let duration = labels[7].text!
+            
+            let freq = labels[3].text!
+            let duration = labels[4].text!
             
             let newS = SoundObject(ty: "sound")
             newS.setVolume(newVol: Int(freq)!)
@@ -952,6 +962,8 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     }
     
     func draggedViewW(_ sender:UIPanGestureRecognizer){
+        let labels = getLabelsInView(view: waitView)
+        
         let translation = sender.translation(in: self.view)
         waitView.center = CGPoint(x: waitView.center.x + translation.x, y: waitView.center.y + translation.y)
         sender.setTranslation(CGPoint.zero, in: self.view)
@@ -971,8 +983,8 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             }
         }
         if(sender.state == UIGestureRecognizerState.ended){
-            let labels = getLabelsInView(view: waitView)
-            let time = labels[3].text!
+            
+            let time = labels[1].text!
             
             let newW = WaitObject(ty: "wait");
             newW.setTime(newTime: Int(time)!);
@@ -983,12 +995,14 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             newPanGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedBlockInCode(_:)))
             waitView.removeGestureRecognizer(oldPanGesture)
             waitView.addGestureRecognizer(newPanGesture)
+            
             if(toAppend){
                 waitView.center = CGPoint(x: nextPoint.x + 128, y: nextPoint.y)
                 nextPoint.x = nextPoint.x + 128
                 waitView.removeFromSuperview()
                 scrollView.addSubview(waitView)
-                objectSequence.append(newW);
+                print("Created a new wait block \(newW.getTime())")
+                objectSequence.append(newW)
                 viewSequence.append(waitView)
             }else{
                 
@@ -1037,8 +1051,8 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         if(sender.state == UIGestureRecognizerState.ended){
             let labels = getLabelsInView(view: startLoopView)
             var iterations: Int = 5
-            if (labels.count == 4){
-                iterations = Int(labels[3].text!)!
+            if (labels.count == 2){
+                iterations = Int(labels[1].text!)!
             }
             
             let newSL = StartLoopObject(ty: "startLoop")
@@ -1061,8 +1075,8 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
                 
                 if (viewSequence.count > 0){
                     for i in 0..<(viewSequence.count - 1){
-                        var leftStart = viewSequence[i].frame.origin.x
-                        var rightEnd = viewSequence[i+1].frame.origin.x + 128
+                        let leftStart = viewSequence[i].frame.origin.x
+                        let rightEnd = viewSequence[i+1].frame.origin.x + 128
                         //If sandwiched between these two blocks, then take the position of the second block
                         if (xLoc > leftStart && xLoc < rightEnd){
                             index = i + 1
@@ -1204,8 +1218,8 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
                 
                 if (viewSequence.count > 0){
                     for i in 0..<(viewSequence.count - 1){
-                        var leftStart = viewSequence[i].frame.origin.x
-                        var rightEnd = viewSequence[i+1].frame.origin.x + 128
+                        let leftStart = viewSequence[i].frame.origin.x
+                        let rightEnd = viewSequence[i+1].frame.origin.x + 128
                         //If sandwiched between these two blocks, then take the position of the second block
                         if (xLoc > leftStart && xLoc < rightEnd){
                             index = i + 1
@@ -1460,14 +1474,12 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             
             if (self.waitView.subviews.count == 4){
                 var timeLbl = self.waitView.subviews[3] as! UILabel
-                timeLbl.text = ans
-            } else {
-                let time = UILabel()
-                time.frame = CGRect(x: 5, y: 45, width: 110, height: 30)
-                time.text = "\(ans)"
-                time.textColor = UIColor.white
                 
-                self.waitView.addSubview(time)
+                if (ans == ""){
+                    timeLbl.text = "2"
+                } else {
+                    timeLbl.text = "\(ans)"
+                }
             }
             
         }))
@@ -1714,20 +1726,7 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     }
     
     func test(action: UIAlertAction){
-        //print("printing objects" )
-        //        for BrickObject in objectSequence {
-        //            print(BrickObject)
-        //        }
-        print("viewSequence count")
-        print(viewSequence.count)
-                print("printing view labels")
-                //for _view in viewSequence{
-                    let labels = getLabelsInView(view: waitView)
-                    for label in labels {
-                        print(label.text)
-                    }
-               // }
-        
+        sendToServer()
     }
     
     func getLabelsInView(view: UIView) -> [UILabel] {
@@ -1793,20 +1792,19 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
                 } else {
                     jsonArray.append(json)
                 }
-            }else if(objectSequence[i].type == "playsound"){
-                var soundObj = SoundObject(ty: "sound")
-                soundObj = objectSequence[i] as! SoundObject
-                let json: JSON = ["type": soundObj.type, "soundfile": soundObj.type]
+            }else if(objectSequence[i].type == "sound"){
+                let soundObj = objectSequence[i] as! SoundObject
+                let json: JSON = ["type": "playsound", "freq": soundObj.getVolume(), "duration": soundObj.duration]
                 if (loopOpened){
                     loopCommands.append(json)
                 } else {
                     jsonArray.append(json)
                 }
             }else if(objectSequence[i].type == "wait"){
-                var waitObj = WaitObject(ty: "wait")
-                waitObj = objectSequence[i] as! WaitObject
-                let json: JSON = ["type":"wait", "seconds": waitObj.time]
+                let waitObj = objectSequence[i] as! WaitObject
+                let json: JSON = ["type":"wait", "duration": waitObj.time]
                 if (loopOpened){
+                    print("Appending a wait to the loop")
                     loopCommands.append(json)
                 } else {
                     jsonArray.append(json)
@@ -1876,6 +1874,7 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
             //print("Mac address that is selected: \(self.chosenMacAddress)")
             let jsonString = sendToServer()
             self.client.socket.emit("run code", jsonString)
+            print("Sending this to the server")
             print(jsonString)
             print("Build request was sent to server with the selected mac address")
         }
