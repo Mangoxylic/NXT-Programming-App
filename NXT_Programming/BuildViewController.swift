@@ -447,13 +447,17 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
     //Update the frequency here
     func frequencyChange(_ sender: UISlider){
         let labels = self.getLabelsInView(view: self.soundView)
-        
+        if labels.count > 5 {
+            labels[5].text = "\(Int(sender.value))"
+        }
     }
     
     //Update the frequency here
     func durationChange(_ sender: UISlider){
         let labels = self.getLabelsInView(view: self.soundView)
-        
+        if labels.count > 7 {
+            labels[7].text = "\(Int(sender.value))"
+        }
     }
 
     func createSound()->UIView{
@@ -463,26 +467,33 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         tempView.layer.borderWidth = 1.2
         tempView.layer.cornerRadius = 5
         tempView.layer.masksToBounds = true
-        tempView.frame = CGRect(x: 295, y: 525, width: 120, height: 160)
+        tempView.frame = CGRect(x: 295, y: 515, width: 120, height: 180)
         
-        var volumeSlider = UISlider(frame: CGRect(x: 5, y: 40, width: 110, height: 20))
+        var volumeSlider = UISlider(frame: CGRect(x: 5, y: 40, width: 110, height: 10))
         volumeSlider.maximumValue = 1000
         volumeSlider.minimumValue = 0
         volumeSlider.value = 500
         volumeSlider.addTarget(self, action: #selector(self.frequencyChange), for: .valueChanged)
         
+        let volumeTitle  = UILabel()
+        volumeTitle.frame = CGRect(x: 10, y: 55, width: 60, height: 40)
+        volumeTitle.text = "Pitch:"
+
         let volumeLabel = UILabel()
-        volumeLabel.frame = CGRect(x: 10, y: 55, width: 120, height: 40)
+        volumeLabel.frame = CGRect(x: 70, y: 55, width: 60, height: 40)
         volumeLabel.text = "50"
         
-        var durationSlider = UISlider(frame: CGRect(x: 5, y: 80, width: 110, height: 20))
+        var durationSlider = UISlider(frame: CGRect(x: 5, y: 85, width: 110, height: 10))
         durationSlider.maximumValue = 10
         durationSlider.minimumValue = 0
         durationSlider.value = 5
-        durationSlider.addTarget(self, action: #selector(self.frequencyChange), for: .valueChanged)
+        durationSlider.addTarget(self, action: #selector(self.durationChange(_:)), for: .valueChanged)
         
+        let durationTitle  = UILabel()
+        durationTitle.frame = CGRect(x: 10, y: 100, width: 120, height: 40)
+        durationTitle.text = "Duration:"
         let durationLabel = UILabel()
-        durationLabel.frame = CGRect(x: 10, y: 95, width: 120, height: 40)
+        durationLabel.frame = CGRect(x: 10, y: 115, width: 120, height: 40)
         durationLabel.text = "45"
         
         var playTypeButton = UIButton();
@@ -509,9 +520,11 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         deleteButton.addTarget(self, action: #selector(deleteBlock(sender:event:)), for: UIControlEvents.touchUpInside)
         tempView.addSubview(name)
         tempView.addSubview(volumeSlider)
+        tempView.addSubview(volumeTitle)
         tempView.addSubview(playTypeButton)
         tempView.addSubview(deleteButton)
         tempView.addSubview(durationSlider)
+        tempView.addSubview(durationTitle)
         tempView.addSubview(volumeLabel)
         tempView.addSubview(playTypeLabel)
         tempView.addSubview(durationLabel)
@@ -876,13 +889,11 @@ class BuildViewController: UIViewController, AddressDelegate, UIPickerViewDelega
         }
         if(sender.state == UIGestureRecognizerState.ended){
             let labels = getLabelsInView(view: soundView)
-            let volume = labels[5].text!
-            let type = labels[6].text!
+            let freq = labels[5].text!
             let duration = labels[7].text!
             
-            let newS = SoundObject(ty: "sound");
-            newS.setTypeSound(newType: type)
-            newS.setVolume(newVol: Int(volume)!)
+            let newS = SoundObject(ty: "sound")
+            newS.setVolume(newVol: Int(freq)!)
             newS.setDuration(newDur: Int(duration)!)
             var oldPanGesture = UIPanGestureRecognizer()
             oldPanGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewS(_:)))
