@@ -249,11 +249,12 @@ class BuildViewController: UIViewController, AddressDelegate {
         let button = UIButton()
         button.frame = CGRect(x: _x, y: _y, width: 96, height: 40)
         button.setTitle(type, for: UIControlState())
-        button.backgroundColor = UIColor.red
+        button.backgroundColor = UIColor.clear
+        button.layer.borderColor = UIColor.orange.cgColor
         button.layer.borderWidth = 1.2
         button.layer.cornerRadius = 5
         button.layer.masksToBounds = true
-        button.setTitleColor(UIColor.white, for: UIControlState.normal)
+        button.setTitleColor(UIColor.orange, for: UIControlState.normal)
         button.tag = 1
         self.view.addSubview(button)
         return button
@@ -263,12 +264,12 @@ class BuildViewController: UIViewController, AddressDelegate {
         startButton.frame = CGRect(x: 0, y: 20, width: 125, height: 100)
         startButton.setTitle("start", for: UIControlState())
 //        startButton.addTarget(self, action: #selector(dragStart(control:event:)), for: UIControlEvents.touchDragExit)
-        startButton.layer.borderColor = UIColor.yellow.cgColor
-        startButton.backgroundColor = UIColor.blue
+        startButton.layer.borderColor = UIColor.orange.cgColor
+        startButton.backgroundColor = UIColor.clear
         startButton.layer.borderWidth = 1.2
         startButton.layer.cornerRadius = 5
         startButton.layer.masksToBounds = true
-        startButton.setTitleColor(UIColor.white, for: UIControlState.normal)
+        startButton.setTitleColor(UIColor.orange, for: UIControlState.normal)
         startButton.tag = 1
         startPoint = startButton.frame.origin
         self.scrollView.addSubview(startButton)
@@ -289,17 +290,22 @@ class BuildViewController: UIViewController, AddressDelegate {
         let button = UIButton()
         button.frame = CGRect(x: _x, y: _y, width: _width, height: _height)
         button.setTitle(title, for: UIControlState())
-        button.backgroundColor = UIColor.red
+        button.backgroundColor = UIColor.clear
+        button.layer.borderColor = UIColor.orange.cgColor
         button.layer.borderWidth = 1.2
         button.layer.cornerRadius = 5
         button.layer.masksToBounds = true
-        button.setTitleColor(UIColor.white, for: UIControlState.normal)
+        button.setTitleColor(UIColor.orange, for: UIControlState.normal)
         return button;
     }
     
     func createMedMotor()->UIView{
         let tempView = UIView()
-        tempView.backgroundColor = UIColor.yellow
+        tempView.backgroundColor = UIColor.clear
+        tempView.layer.borderColor = UIColor.orange.cgColor
+        tempView.layer.borderWidth = 1.2
+        tempView.layer.cornerRadius = 5
+        tempView.layer.masksToBounds = true
         tempView.frame = CGRect(x: 25, y: 650, width: 120, height: 160)
         
         var speedButton = UIButton()
@@ -320,6 +326,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         let name = UILabel()
         name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
         name.text = "Medium Motor"
+        name.textColor = UIColor.orange
         
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewMM(_:)))
@@ -344,7 +351,11 @@ class BuildViewController: UIViewController, AddressDelegate {
     
     func createDisplay()->UIView{
         let tempView = UIView()
-        tempView.backgroundColor = UIColor.yellow
+        tempView.backgroundColor = UIColor.clear
+        tempView.layer.borderColor = UIColor.orange.cgColor
+        tempView.layer.borderWidth = 1.2
+        tempView.layer.cornerRadius = 5
+        tempView.layer.masksToBounds = true
         tempView.frame = CGRect(x: 500, y: 650, width: 120, height: 160)
         
         var clearScreenButton = UIButton();
@@ -362,6 +373,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         let name = UILabel()
         name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
         name.text = "Display"
+        name.textColor = UIColor.orange
         
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewD(_:)))
@@ -384,7 +396,11 @@ class BuildViewController: UIViewController, AddressDelegate {
     
     func createSound()->UIView{
         let tempView = UIView()
-        tempView.backgroundColor = UIColor.yellow
+        tempView.backgroundColor = UIColor.clear
+        tempView.layer.borderColor = UIColor.orange.cgColor
+        tempView.layer.borderWidth = 1.2
+        tempView.layer.cornerRadius = 5
+        tempView.layer.masksToBounds = true
         tempView.frame = CGRect(x: 650, y: 650, width: 120, height: 160)
         
         var volumeButton = UIButton();
@@ -399,6 +415,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         let name = UILabel()
         name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
         name.text = "Sound"
+        name.textColor = UIColor.orange
         
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewS(_:)))
@@ -419,7 +436,11 @@ class BuildViewController: UIViewController, AddressDelegate {
     
     func createWait()->UIView{
         let tempView = UIView()
-        tempView.backgroundColor = UIColor.yellow
+        tempView.backgroundColor = UIColor.clear
+        tempView.layer.borderColor = UIColor.orange.cgColor
+        tempView.layer.borderWidth = 1.2
+        tempView.layer.cornerRadius = 5
+        tempView.layer.masksToBounds = true
         tempView.frame = CGRect(x: 800, y: 650, width: 120, height: 160)
         
         var timeButton = UIButton();
@@ -431,6 +452,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         let name = UILabel()
         name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
         name.text = "Wait"
+        name.textColor = UIColor.orange
         
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewW(_:)))
@@ -450,7 +472,11 @@ class BuildViewController: UIViewController, AddressDelegate {
     
     func createStartLoop()->UIView{
         let tempView = UIView()
-        tempView.backgroundColor = UIColor.yellow
+        tempView.backgroundColor = UIColor.clear
+        tempView.layer.borderColor = UIColor.orange.cgColor
+        tempView.layer.borderWidth = 1.2
+        tempView.layer.cornerRadius = 5
+        tempView.layer.masksToBounds = true
         tempView.frame = CGRect(x: 200, y: 650, width: 120, height: 160)
         
         var loopsButton = UIButton()
@@ -462,6 +488,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         let name = UILabel()
         name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
         name.text = "Start Loop"
+        name.textColor = UIColor.orange
         
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewSL(_:)))
@@ -486,7 +513,11 @@ class BuildViewController: UIViewController, AddressDelegate {
     
     func createEndLoop()->UIView{
         let tempView = UIView()
-        tempView.backgroundColor = UIColor.yellow
+        tempView.backgroundColor = UIColor.clear
+        tempView.layer.borderColor = UIColor.orange.cgColor
+        tempView.layer.borderWidth = 1.2
+        tempView.layer.cornerRadius = 5
+        tempView.layer.masksToBounds = true
         tempView.frame = CGRect(x: 400, y: 650, width: 120, height: 160)
         
         var panGesture = UIPanGestureRecognizer()
@@ -497,6 +528,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         let name = UILabel()
         name.frame = CGRect(x: 0, y: 0, width: 120, height: 40)
         name.text = "End Loop"
+        name.textColor = UIColor.orange
         
         var deleteButton = UIButton();
         deleteButton = createButton(title: "X", _x: 80, _y: 0, _width: 20, _height: 30)
@@ -538,6 +570,7 @@ class BuildViewController: UIViewController, AddressDelegate {
         let name = UILabel()
         name.frame = CGRect(x: 40, y: 0, width: 120, height: 40)
         name.text = "Steer"
+        name.textColor = UIColor.orange
         
         var panGesture = UIPanGestureRecognizer()
         panGesture = UIPanGestureRecognizer(target: self, action: #selector(draggedViewSteer(_:)))
@@ -1629,7 +1662,11 @@ class BuildViewController: UIViewController, AddressDelegate {
         print("sup")
         let speedInputFrame = CGRect(x: 250, y: 250, width: 120, height: 160)
         speedInputView = UIView(frame: speedInputFrame)
-        speedInputView.backgroundColor = UIColor.cyan
+        speedInputView.backgroundColor = UIColor.clear
+        speedInputView.layer.borderColor = UIColor.orange.cgColor
+        speedInputView.layer.borderWidth = 1.2
+        speedInputView.layer.cornerRadius = 5
+        speedInputView.layer.masksToBounds = true
         speedInputView.isHidden = false
         
         let okayButtonFrame = CGRect(x: 0, y: 0, width: 50, height: 50)

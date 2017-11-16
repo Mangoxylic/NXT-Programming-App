@@ -169,35 +169,6 @@ class StartupViewController: UIViewController, UICollectionViewDataSource, UICol
         alertController.addAction(cancelAction)
         self.present(alertController, animated: true)
     }
-    
-    
-    @IBAction func testRealmButtonDidPress(_ sender: UIButton) {
-        //let programDate = self.programsArray[self.programsArray.count - 1].date
-        // Return true if successfully saved, false otherwise (false when program with name already exists
-        var result = ProgramManager.saveNewProgramWith(programName: "testName1", programJSON: "testJSON")
-        result = ProgramManager.saveNewProgramWith(programName: "testName2", programJSON: "testJSON")
-        result = ProgramManager.saveNewProgramWith(programName: "testName3", programJSON: "testJSON")
-        result = ProgramManager.saveNewProgramWith(programName: "testName4", programJSON: "testJSON")
-        result = ProgramManager.saveNewProgramWith(programName: "testName5", programJSON: "testJSON")
-        result = ProgramManager.saveNewProgramWith(programName: "testName6", programJSON: "testJSON")
-        result = ProgramManager.saveNewProgramWith(programName: "testName7", programJSON: "testJSON")
-        //let result = ProgramManager.updateProgramWith(programName: "testName1", programJSON: "testJSON3", date: programDate)
-        if result {
-            print("Successfully saved to Realm")
-        } else {
-            print("Object with the name already exists")
-        }
-        
-        // Update collectionView
-        self.programsArray = ProgramManager.loadAllPrograms()
-        self.collectionView.reloadData()
-    }
-    
-    @IBAction func clearRealmObjectsButtonDidPress(_ sender: UIButton) {
-        ProgramManager.clearAllPrograms()
-        self.programsArray = ProgramManager.loadAllPrograms()
-        self.collectionView.reloadData()
-    }
 
     // Private functions
     
