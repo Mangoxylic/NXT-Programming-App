@@ -10,6 +10,25 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Picker View Controller-->
+        <scene sceneID="US2-5p-ayn">
+            <objects>
+                <viewController id="Qlg-Ai-6yB" customClass="PickerViewController" customModule="NXT_Programming" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="nz7-Qc-VhR"/>
+                        <viewControllerLayoutGuide type="bottom" id="4Xr-Rh-kR4"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="PpE-WQ-I6t">
+                        <rect key="frame" x="0.0" y="0.0" width="400" height="200"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <size key="freeformSize" width="400" height="200"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="F7V-5V-sKm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1501" y="-509"/>
+        </scene>
         <!--Program-->
         <scene sceneID="tne-QT-ifu">
             <objects>
@@ -38,6 +57,13 @@
                             <barButtonItem title="Save" id="no1-dP-3ym">
                                 <connections>
                                     <action selector="saveBarButtonDidPress:" destination="BYZ-38-t0r" id="w8x-CF-fn8"/>
+                                </connections>
+                            </barButtonItem>
+                            <barButtonItem title="Sensors" id="wOR-Wa-Xpk">
+                                <connections>
+                                    <segue destination="Qlg-Ai-6yB" kind="popoverPresentation" popoverAnchorBarButtonItem="wOR-Wa-Xpk" id="wnw-vG-ww9">
+                                        <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                                    </segue>
                                 </connections>
                             </barButtonItem>
                             <barButtonItem title="Build" id="JTv-sC-tjC">
